@@ -5,6 +5,7 @@ $accent_plus: #6af
 
 $black: #333
 $lite: #999
+$white: #fff
 
 
 div
@@ -36,7 +37,7 @@ body
   header
     :position absolute
     :top 0
-    :left 0
+    :right 0
     :margin 0
     :padding 0
 
@@ -57,14 +58,11 @@ body
         :color $accent
 
     ul.menu_section
-      :display inline-block
       :list-style-type none
-      :padding 0 10px 0 10px
-      :margin 0 10px 0 10px
+      :padding 0 0 0 2px
 
     nav
       @include list_as_nav
-      :display inline-block
   
     nav.year_selector
       :font-size 34px
@@ -73,11 +71,10 @@ body
   .header_search_ui
     :font-weight bold
     :padding-top 0
-    :background-color rgba(255,255,255,0.8)
-    :width 340px
+    :background-color rgba(0,0,0,0.5)
 
     #view_stats
-      :color $lite
+      :color $white
       :padding 8px 8px 8px 10px
     
     form.search

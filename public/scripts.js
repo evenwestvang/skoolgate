@@ -40,7 +40,6 @@ function init_maps() {
     mapTypeId: google.maps.MapTypeId.ROADMAP,
     mapTypeControl: false,
     navigationControlOptions: { 
-      position: google.maps.ControlPosition.RIGHT, 
       style: google.maps.NavigationControlStyle.DEFAULT}
   };
   map = new google.maps.Map(document.getElementById("map_canvas"),
@@ -139,7 +138,7 @@ function MarkerKeeper() {
         if (markerHash[item.id] == undefined) {
           var size = Math.ceil((item.body / 25)+11);
           if (detail_level != 0) {
-            size = (size / 25) + 15;
+            size = (size / 25) + 7;
           }
           var latlng = new google.maps.LatLng(item.lat, item.lon);
           var icon_url = ButtonFactory.create(item.avg, size);
@@ -168,8 +167,8 @@ var ButtonFactory = (function() {
   return new function() {
 
     var h = 1;
-    var s = 90; // constant saturation
-    var l = 45; // constant luminance
+    var s = 100;
+    var l = 45;
     var a = .80;
 
     var getColor = function(val) {
