@@ -1,0 +1,37 @@
+$selected: #fff
+
+
+@mixin list_as_nav
+  ul
+    :padding 0
+    :margin 0
+    li
+      :display inline-block
+      :margin-right 10px
+      :font-weight bold
+      a.selected
+        :color #f00
+
+      
+@mixin shadows($color: #aaa, $x: 1px, $y: 2px, $spread: 2px)
+  :-moz-box-shadow $color $x $y $spread
+  :-webkit-box-shadow $color $x $y $spread
+  :box-shadow $color $x $y $spread
+
+@mixin corners($tl: 5px, $tr: nil, $br: nil, $bl: nil)
+  @if $tr == nil
+    $tr: $tl
+  @if $br == nil
+    $br: $tl
+  @if $bl == nil
+    $bl: $tl
+  -moz-border-radius: $tl $tr $br $bl
+  -webkit-border-top-left-radius: $tl
+  -webkit-border-bottom-left-radius: $bl
+  -webkit-border-top-right-radius: $tr
+  -webkit-border-bottom-right-radius: $br
+  border-radius: $tl $tr $br $bl
+
+@mixin vertical-gradient($start: #000, $end: #ccc)
+  :background -webkit-gradient( linear, left top, left bottom, color-stop(0, $start), color-stop(1, $end) )
+  :background -moz-linear-gradient(center top, $start 0%, $end 100%)

@@ -1,0 +1,13 @@
+# Bundler artifacts
+.bundle
+vendor/bundle
+
+# Other artifacts
+/.rvmrc*
+/.sass-cache
+
+# Not interesting
+/tmp
+.DS_Store
+/log
+

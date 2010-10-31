@@ -1,0 +1,53 @@
+
+*Presents data from Norwegian national school benchmarks.*
+
+Nothing to see here yet. Documentation forthcoming. 
+
+_Source data set_
+http://www.dagbladet.no/nyheter/2008/11/13/553824.html / alt for 2008
+
+_Processed data at_
+https://spreadsheets.google.com/ccc?key=0AonGfbsFlQRLdFNyVDIyQjhYZm4zX3ZTZmNuQnQwQlE&hl=en
+
+*Please help correct any errors.*
+
+_Description_
+* NPREG05 = regning for 5.-klassingene, NPREG08 = regning for 8.-klassingene.
+* NPLES05 = lesning for 5.-klassingene, NPLES08 = lesning for 8.-klassingene.
+* NPENG05 = engelsk for 5.-klassingene, NPENG08 = engelsk for 8.klassingene.
+
+TODO: 
+  * marker popup balloons with extended stats
+  * http cache with rack::cache
+  * deploy production environment
+  * Push project to GitHub
+  * Engage weaponized tweeting array
+
+SOMEDAY:
+  * aggregate results by test type and year for filtering
+  * ranked static stats pages: counties / municipalities w/ map link
+  * windowed google streetview panoramas on #about page
+  
+DONE:
+  * render municipalities and counties for zoomed out levels
+  * Setup Sinatra-app with MongoDB and Mongoid glue
+  * Read CSV data
+  * Scrape school adresses from skoleporten
+  * Geocode schools
+  * Dump geocoded schools to CSV
+  * Show Google Maps full screen
+  * Sketch a GUI
+  * Load markers for map bounds over AJAX as Json
+  * extract counties and municipalities into their own models
+  * parse test results
+  * calculate normalize test results, average for school, municipality, county
+  * scrape student body count from skoleporten
+  * add hatched dark layer to background map
+  * render nice markers with school size and performance
+  * geocode counties and municipalities
+  * junk markers not in bounds when scrolling and zooming
+  * apply MIT License
+  * Setup production environment
+  * apply Google chrome frame for the IE masses
+  * stuff Google geocoding key in environment
+  

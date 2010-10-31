@@ -1,0 +1,99 @@
+@import 'mixins'
+
+$accent: #38f
+$accent_plus: #6af
+
+$black: #333
+$lite: #999
+
+
+div
+  :padding 0
+  :margin 0
+
+  
+a:link
+  :color $accent
+  :text-decoration none
+
+a:visited
+  :color $accent
+
+a:hover
+  :color $accent_plus
+
+body
+  :margin 0px
+  :font-family 'Helvetica', 'Arial'
+  :font-size 12px
+  :color $black
+  :text-transform uppercase
+
+  #map_canvas
+    :width 100%
+    :opacity 0.90
+
+  header
+    :position absolute
+    :top 0
+    :left 0
+    :margin 0
+    :padding 0
+
+  .header_top
+    :background-color rgba(255,255,255,1)
+    :padding 8px 8px 4px 10px
+    h1
+      :display inline-block
+      :font-size 34px
+      :font-weight bold
+      :margin 0
+      a
+        :color #000
+    p
+      :font-weight bold
+      :margin 0
+      a
+        :color $accent
+
+    ul.menu_section
+      :display inline-block
+      :list-style-type none
+      :padding 0 10px 0 10px
+      :margin 0 10px 0 10px
+
+    nav
+      @include list_as_nav
+      :display inline-block
+  
+    nav.year_selector
+      :font-size 34px
+      :line-height 30px
+
+  .header_search_ui
+    :font-weight bold
+    :padding-top 0
+    :background-color rgba(255,255,255,0.8)
+    :width 340px
+
+    #view_stats
+      :color $lite
+      :padding 8px 8px 8px 10px
+    
+    form.search
+      :position absolute
+      :top 0px
+      @include vertical-gradient(rgba(0,0,00,0.3), rgba(0,0,30,0.1))
+      @include corners(0px,0,0,3px)
+      :padding 20px
+      :width 250px
+
+footer
+  @include list_as_nav
+  :color $lite
+  :padding 5px 0 0 10px
+  :margin 0px
+
+  a
+    :color darken($lite, 10)
+  
