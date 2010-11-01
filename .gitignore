@@ -4,9 +4,10 @@ vendor/bundle
 
 # Other artifacts
 /.sass-cache
+*~
 
 # Not interesting
 /tmp
 .DS_Store
 /log
-
+/pids

@@ -1,0 +1,14 @@
+---
+    environment: production
+    chdir: /srv/skoleporten.bengler.no/
+    address: 127.0.0.1
+    user: www-data
+    group: www-data
+    port: 10000
+    pid: /srv/skoleporten.bengler.no/pids/thin.pid
+    rackup: /srv/skoleporten.bengler.no/config.ru
+    log: /srv/skoleporten.bengler.no/log/thin.log
+    max_conns: 4096
+    timeout: 30
+    max_persistent_conns: 1024
+    daemonize: true

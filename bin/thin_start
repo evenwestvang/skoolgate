@@ -1,0 +1,5 @@
+#!/bin/sh
+
+# Oh yes! El cheapo!
+
+bundle exec thin -s 10 -C config.yml -R config.ru start
