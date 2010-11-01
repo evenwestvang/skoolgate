@@ -1,0 +1,380 @@
+#!/usr/bin/env ruby
+
+require 'timeout'
+require 'optparse'
+$:.unshift(File.dirname($0) + '/../lib')
+require 'daemonize'
+require 'socket'
+require 'thread'
+
+class GracefulRestartNotification
+  def initialize(pid)
+    @file_name = "/tmp/graceful_restart.#{pid}"
+  end
+
+  def create
+    @data = Time.now.to_f
+    File.open(@file_name, "w") { |f| f << @data }
+  end
+  
+  def notify!
+    data = File.read(@file_name)
+    data = "OK #{data}"
+    File.open(@file_name, "w") { |f| f << data }
+  end
+  
+  def notified?
+    data = File.read(@file_name) rescue ''
+    return "OK #{@data}" == data.strip
+  end
+  
+  def delete
+    File.unlink(@file_name) rescue nil
+  end
+end
+
+# Override controller to provide graceful restart.
+class RailsDaemonController < DaemonController
+
+  def restart
+    signal("USR1")
+  end
+
+  def graceful_restart
+    notification = GracefulRestartNotification.new(pid)
+    notification.create
+    signal("USR2")
+    120.times do
+      $stderr << "."
+      break if notification.notified?
+      sleep(5)
+    end
+    success = notification.notified?
+    notification.delete
+    raise "Timed out waiting for restart to complete" unless success
+  end
+
+  def control_with_command(command, args, title = nil)
+    if command == "graceful-restart"
+      $stderr << "Gracefully restarting #{title} (hit ctrl-C to skip the wait without canceling the restart): "
+      begin
+        handle_errors do
+          graceful_restart
+          $stderr << "restarted\n"
+        end
+      rescue Interrupt
+        $stderr << "interrupted\n"
+      end
+    else
+      super
+    end
+  end
+
+end
+
+# A Rails instance.
+class RailsInstance
+  
+  def initialize(options)
+    @root = options[:root]
+    @environment = options[:environment]
+    @port = options[:port]
+    @logger = options[:logger]
+    @pid_file = "#{@root}/tmp/pids/rails_#{@environment}_#{@port}.pid"
+  end
+
+  def pid
+    @pid ||= read_pid_file
+  end
+  
+  def uncache_pid
+    @pid = nil
+  end
+  
+  def read_pid_file
+    pid = nil
+    begin
+      data = File.read(@pid_file)
+    rescue Errno::ENOENT
+      # Ignore
+    else
+      pid = $1.to_i if data =~ /(\d+)/
+      @logger.info("PID file of dispatcher on port #{@port} read: #{pid}") if pid
+    end
+    pid
+  end
+  
+  def delete_pid_file
+    uncache_pid
+    FileUtils.rm_f(@pid_file) rescue nil
+  end
+  
+  def start
+    self.pid  # Force read of PID file
+    unless listening?
+      delete_pid_file
+      thin_wrapper = File.expand_path('thin_wrapper', File.dirname($0))
+      options = []
+      options << "--daemonize"
+      options << "--environment #{@environment}"
+      options << "--port #{@port}"
+      options << "--log #{@root}/log/thin.log"
+      options << "--pid #{@pid_file}"
+      options << "--chdir #{@root}"
+      options << "--rackup #{@root}/config.ru"
+      cmdline = "env #{thin_wrapper} start #{options.join(' ')}"
+      @logger.info("Starting dispatcher on port #{@port}: #{cmdline}")
+      if not system(cmdline)
+        @logger.error("Could not start dispatcher for some reason")
+      end
+      status = $?
+      unless status.exited? and status.exitstatus == 0
+        @logger.error("Dispatcher failed with exit code #{status.exitstatus}")
+      end
+    end
+  end
+  
+  def listening?
+    begin
+      server = TCPServer.new('0.0.0.0', @port)
+    rescue Errno::EADDRINUSE
+      return true
+    else
+      server.close rescue nil
+      return false
+    end
+  end
+  
+  def running?
+    running = false
+    pid = self.pid
+    if pid
+      begin
+        Process.kill(0, pid)
+      rescue Errno::ESRCH
+        # Ignore
+      rescue Exception => e
+        @logger.error(e.message)
+        @logger.error(e.backtrace.join("\n"))
+      else
+        running = true
+      end
+    end
+    running
+  end
+  
+  def terminate(force = false)
+    signal(force ? "KILL" : "TERM")
+  end
+
+  def signal(signame)
+    if running?
+      pid = self.pid
+      @logger.info("Sending #{signame} to dispatcher #{pid} on port #{@port}")
+      begin
+        Process.kill(signame, pid)
+      rescue Errno::ESRCH
+        # Ignore
+      rescue Exception => e
+        @logger.error(e.message)
+        @logger.error(e.backtrace.join("\n"))
+      end
+    end
+  end
+  
+  attr_reader :port
+end
+
+# Instance pool.
+class RailsPool
+
+  def initialize(options)
+    @logger = options[:logger]
+    @instances = []
+    @mutex = Mutex.new
+  end
+  
+  def add_instance(instance)
+    @mutex.synchronize do
+      @instances << instance
+    end
+  end
+  
+  def start_all
+    @mutex.synchronize do
+      @instances.each { |instance| instance.start unless instance.running? }
+    end
+  end
+  
+  def restart_all_gracefully
+    Thread.start do
+      notification = GracefulRestartNotification.new(Process.pid)
+      delay = 20
+      groups = 6
+      terminal = @mutex.synchronize { @instances.clone }
+      group_size = [terminal.length / groups, 1].max
+      restartables = []
+      while true
+        @logger.info("Graceful restart: Waiting on #{terminal.length} processes")
+        killables = []
+        group_size.times do
+          instance = terminal.delete_at(rand(terminal.length))
+          if instance and instance.running?
+            killables << instance
+          end
+        end
+        break if killables.empty?
+        @logger.info("Graceful restart: Terminating #{killables.length} instances")
+        killables.each do |instance|
+          instance.terminate
+          restartables << instance
+        end
+        unless terminal.empty?
+          @logger.info("Graceful restart: Sleeping #{delay}s until next kill")
+          sleep(delay)
+        end
+      end
+      notification.notify!
+      @logger.info("Graceful restart: Done")
+    end
+  end
+  
+  def restart_all
+    terminate_all(:restart => true)
+  end
+  
+  def terminate_all(options = {})
+    pending = @mutex.synchronize { @instances.clone }
+    pending.each do |instance|
+      instance.terminate
+    end
+    begin
+      Timeout.timeout(60) do
+        while not pending.empty?
+          @logger.error("Waiting on #{pending.length} processes")
+          pending.to_a.each do |instance|
+            if not instance.running?
+              if options[:restart]
+                @logger.info("Dispatcher on port #{instance.port} has stopped, restarting it")
+                instance.start
+              else
+                @logger.info("Dispatcher on port #{instance.port} has stopped")
+              end
+              pending.delete(instance)
+            end
+          end
+          sleep(1)
+        end
+      end
+    rescue Timeout::Error
+      # Ignore
+    rescue Exception => e
+      @logger.error("Something went wrong: #{e}")
+    end
+    pending.each do |instance|
+      if instance.running?
+        @logger.error("Instance #{instance.pid} hanging, killing it")
+        instance.terminate(true)
+        if options[:restart]
+          instance.start
+        end
+      end
+    end
+    @logger.info("All done")
+  end
+      
+  def signal_all(signame)
+    @mutex.synchronize do
+      @instances.each do |instance|
+        instance.signal(signame)
+      end
+    end
+  end
+  
+end
+
+# Parse command line arguments
+OPTIONS = {
+  :root => File.expand_path(File.dirname($0) + "/.."),
+  :port => 3000,
+  :instances => 8,
+  :environment => "production"
+}
+ARGV.options do |opts|
+  opts.banner = "Usage: #{File.basename($0)} [OPTIONS] [start | stop | restart | graceful-restart | status]"
+  opts.separator ""
+  opts.on("-p", "--port=number", Integer, 
+    "Starting port number (default: #{OPTIONS[:port]})") do |v| 
+    OPTIONS[:port] = v
+  end
+  opts.on("-n", "--instances=number", Integer, 
+    "Number of instances (default: #{OPTIONS[:instances]})") do |v| 
+    OPTIONS[:instances] = v
+  end
+  opts.on("-e", "--environment=env", String, 
+    "Environment to run in (default: #{OPTIONS[:environment]})") do |v| 
+    OPTIONS[:environment] = v
+  end
+  opts.on("-r", "--root=root", String, 
+    "Override Rails root (default: #{OPTIONS[:root]})") do |v| 
+    OPTIONS[:root] = v
+  end
+  opts.on("-h", "--help", "Show this help message.") do
+    puts opts
+    exit
+  end
+  opts.order! { |x| opts.terminate(x) }
+  if ARGV.empty?
+    puts "Nothing to do. Run with -h for help."
+    exit
+  end
+end
+ENV["RAILS_ENV"] = OPTIONS[:environment]
+
+# Set up controller
+root = OPTIONS[:root]
+controller = RailsDaemonController.new(
+  :root => root,
+  :pid_file => "#{root}/tmp/pids/rails.pid",
+  :log_file => "#{root}/log/rails.log")
+controller.on_spawn do
+  logger = controller.logger
+
+  # Create instances
+  pool = RailsPool.new(:logger => logger)
+  port_range = OPTIONS[:port]...(OPTIONS[:port] + OPTIONS[:instances])
+  port_range.each do |port|
+    instance = RailsInstance.new(:root => root, 
+      :environment => OPTIONS[:environment], 
+      :port => port, 
+      :logger => logger)
+    pool.add_instance(instance)
+  end
+  
+  # Pass these signals on to dispatchers
+  Signal.trap("TERM") do
+    logger.info("TERM received, terminating all instances")
+    pool.terminate_all
+    logger.info("Exiting")
+    exit
+  end
+  Signal.trap("USR1") do
+    logger.info("USR1 received, restarting all instances immediately")
+    pool.terminate_all(:restart => true)
+  end
+  Signal.trap("USR2") do
+    logger.info("USR2 received, restarting all instances gracefully")
+    pool.restart_all_gracefully
+  end
+  Signal.trap("HUP") do
+    logger.info("HUP received, sending to all instances")
+    pool.signal_all("HUP")
+  end
+  
+  # Loop while trying to start dispatchers
+  loop do
+    pool.start_all
+    sleep(5)
+  end
+end
+controller.control(ARGV)

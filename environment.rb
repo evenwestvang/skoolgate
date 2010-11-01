@@ -8,7 +8,6 @@ require 'sass'
 require './models'
 require 'rack/cache'
 
-
 set :root, File.dirname(__FILE__) # <- do we need this? // check to see if templating breaks without it
 set :haml, :format => :html5
 
@@ -44,5 +43,4 @@ configure :production do
     :verbose     => true,
     :metastore   => 'memcached://localhost:11211/meta',
     :entitystore => 'memcached://localhost:11211/body'
-
 end
