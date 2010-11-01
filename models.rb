@@ -3,7 +3,6 @@
 #db.schools.ensureIndex({location : "2d"})
 #db.municipalities.ensureIndex({location : "2d"})
 
-
 class School
  include Mongoid::Document
  field :name, :type => String
@@ -15,7 +14,7 @@ class School
  field :result_average, :type => Float
  field :county, :type => String
  field :municipality, :type => String
- # embed
+ # embeds
  embeds_many :test_results
  # indexes
  index [[ :location, Mongo::GEO2D ]]
@@ -23,7 +22,6 @@ class School
  validates_presence_of :name
  validates_presence_of :municipality
  validates_presence_of :county
-
 end
 
 class TestResult
@@ -34,7 +32,7 @@ class TestResult
  field :normalized_result, :type => Float
  field :year, :type => Integer
 
- # embed
+ # embeds
  embedded_in :school, :inverse_of => :test_results
  # validations
  validates_presence_of :school_year
