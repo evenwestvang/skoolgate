@@ -3,7 +3,6 @@
 vendor/bundle
 
 # Other artifacts
-/.rvmrc*
 /.sass-cache
 
 # Not interesting
