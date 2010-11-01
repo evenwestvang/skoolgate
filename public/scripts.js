@@ -138,7 +138,7 @@ function MarkerKeeper() {
         if (markerHash[item.id] == undefined) {
           var size = Math.ceil((item.body / 25)+11);
           if (detail_level != 0) {
-            size = (size / 25) + 7;
+            size = (size / 25) + 10;
           }
           var latlng = new google.maps.LatLng(item.lat, item.lon);
           var icon_url = ButtonFactory.create(item.avg, size);
