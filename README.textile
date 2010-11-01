@@ -18,10 +18,8 @@ _Description_
 
 TODO FOR PRE-RELEASE: 
   * nicely styled marker popup balloons with extended stats
-  * http cache with rack::cache and memcached
-  * deploy production environment
-  * Push project to GitHub
-  * Engage weaponized tweeting array
+  * about page and colofon. write copy.
+  * engage weaponized tweeting array
 
 SOMEDAY:
   * aggregate results by test type and year for filtering
@@ -29,6 +27,9 @@ SOMEDAY:
   * windowed google streetview panoramas on #about page
   
 DONE:
+  * http cache with rack::cache and memcached
+  * deploy production environment
+  * push project to GitHub
   * setup Sinatra-app with MongoDB and Mongoid glue
   * read CSV data
   * Scrape school adresses from skoleporten
