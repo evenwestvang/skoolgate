@@ -16,9 +16,9 @@ _Description_
 * NPLES05 = lesning for 5.-klassingene, NPLES08 = lesning for 8.-klassingene.
 * NPENG05 = engelsk for 5.-klassingene, NPENG08 = engelsk for 8.klassingene.
 
-TODO: 
-  * marker popup balloons with extended stats
-  * http cache with rack::cache
+TODO FOR PRE-RELEASE: 
+  * nicely styled marker popup balloons with extended stats
+  * http cache with rack::cache and memcached
   * deploy production environment
   * Push project to GitHub
   * Engage weaponized tweeting array
@@ -29,9 +29,8 @@ SOMEDAY:
   * windowed google streetview panoramas on #about page
   
 DONE:
-  * render municipalities and counties for zoomed out levels
-  * Setup Sinatra-app with MongoDB and Mongoid glue
-  * Read CSV data
+  * setup Sinatra-app with MongoDB and Mongoid glue
+  * read CSV data
   * Scrape school adresses from skoleporten
   * Geocode schools
   * Dump geocoded schools to CSV
@@ -50,4 +49,5 @@ DONE:
   * Setup production environment
   * apply Google chrome frame for the IE masses
   * stuff Google geocoding key in environment
+  * render municipalities and counties for zoomed out levels
   
