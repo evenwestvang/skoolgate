@@ -5,7 +5,6 @@ require 'sinatra'
 require 'mongoid'
 require 'haml'
 require 'sass'
-require 'memcached'
 require './models'
 require 'rack/cache'
 
