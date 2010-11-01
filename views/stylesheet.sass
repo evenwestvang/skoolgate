@@ -3,6 +3,11 @@
 $accent: #38f
 $accent_plus: #6af
 
+$footer: rgba(10,10,10,0.9)
+
+$header: rgba(255,255,255,1)
+$header: rgba(10,10,10,0.9)
+
 $black: #333
 $lite: #999
 $white: #fff
@@ -27,7 +32,7 @@ body
   :margin 0px
   :font-family 'Helvetica', 'Arial'
   :font-size 12px
-  :color $black
+  :color $white
   :text-transform uppercase
 
   #map_canvas
@@ -42,40 +47,31 @@ body
     :padding 0
 
   .header_top
-    :background-color rgba(255,255,255,1)
-    :padding 8px 8px 4px 10px
+    :background-color $header
+    :padding 15px 25px 5px 25px
     h1
       :display inline-block
-      :font-size 34px
-      :font-weight bold
-      :margin 0
-      a
-        :color #000
-    p
-      :font-weight bold
-      :margin 0
-      a
-        :color $accent
+      :font-size 36px
+      :line-height 30px
 
-    ul.menu_section
-      :list-style-type none
-      :padding 0 0 0 2px
+      :font-weight bold
+      :margin 0
 
     nav
       @include list_as_nav
   
     nav.year_selector
-      :font-size 34px
+      :font-size 36px
       :line-height 30px
 
   .header_search_ui
     :font-weight bold
     :padding-top 0
-    :background-color rgba(0,0,0,0.5)
+    :background-color rgba(0,10,30,0.6)
 
     #view_stats
       :color $white
-      :padding 8px 8px 8px 10px
+      :padding 8px 8px 8px 20px
     
     form.search
       :position absolute
@@ -85,11 +81,19 @@ body
       :padding 20px
       :width 250px
 
+  .header_search_ui.less_details
+    :background-color rgba(250,90,10,0.8)
+
 footer
+  :background-color $footer
+  :position absolute
+  :bottom 10px
+  :left 0
+
   @include list_as_nav
   :color $lite
-  :padding 5px 0 0 10px
-  :margin 0px
+  :padding 5px 0 5px 10px
+  :margin 0px 0px 5px 0px
 
   a
     :color darken($lite, 10)

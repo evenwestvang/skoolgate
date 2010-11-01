@@ -1,33 +1,18 @@
-/* Analytics */
-
-var _gaq = _gaq || [];
-_gaq.push(['_setAccount', 'UA-129279-17']);
-_gaq.push(['_trackPageview']);
-
-(function() {
-  var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-  ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-  var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-})();
-
 /* Inits */
 
 var map = null;
 
 function initialize() {
   jQuery.event.add(window, "resize", resizeFrame);
-
   CFInstall.check({
      mode: "overlay",
      destination: "http://skoleporten.bengler.no"
    });
-
    init_maps();
 }
 
 function resizeFrame() {
-    $("#map_canvas").css('height',$(window).height()-$('footer').outerHeight() - 15);
-    // $("form.search").css('left',$(window).width()-$('form').outerWidth());
+    $("#map_canvas").css('height',$(window).height());
 }
 
 /* Maps */
@@ -121,8 +106,12 @@ function MarkerKeeper() {
     }
     if (detail_level != previous_level) {
       cullAllMarkers();
+      if (detail_level == 1) {
+        $('.header_search_ui').addClass('less_details');
+      } else {
+        $('.header_search_ui').removeClass('less_details');        
+      }
     }
-
   }
 
   function getMarkersForBounds() {

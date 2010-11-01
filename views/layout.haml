@@ -14,7 +14,15 @@
       :src  => "/jquery-1.4.3.min.js"}
     %script{:type => "text/javascript",
       :src  => "/scripts.js"}
-
+    :javascript
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-129279-17']);
+      _gaq.push(['_trackPageview']);
+      (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
   %body
     #map_canvas_container
       #map_canvas
@@ -33,23 +41,19 @@
             %li
               = link_to("2009", "/missing_data")
             %li
-              = link_to("2010", "/missing_data")
-        %ul.menu_section
-          %li
-            %nav.main_menu
-              %ul
-                %li
-                  = link_to("hjem", "/")
-                %li
-                  = link_to("Om denne siden", "/about")
-                -if false
-                  %li
-                    = link_to("kommuner og fylker", "/counties")
-
+              = link_to("2010", "/not_yet")
+        %nav
+          %ul
+            %li
+              = link_to("hjem", "/")
+            %li
+              = link_to("Om denne siden", "/about")
+            -if false
+              %li
+                = link_to("kommuner og fylker", "/counties")
       .header_search_ui
         #view_stats
           &nbsp;
-
     %section
       = yield
     %footer
@@ -62,4 +66,4 @@
         %li
           = link_to("Github", "http://github.com/evenwestvang/skoolgate")
         %li
-          = link_to("Følg skoleporten.bengler.no på Twitter", "http://twitter.com/skoleporten")
+          = link_to("Følg skoleporten på Twitter", "http://twitter.com/skoleporten")
