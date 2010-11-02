@@ -16,8 +16,9 @@ _Description_
 * NPLES05 = lesning for 5.-klassingene, NPLES08 = lesning for 8.-klassingene.
 * NPENG05 = engelsk for 5.-klassingene, NPENG08 = engelsk for 8.klassingene.
 
-TODO FOR PRE-RELEASE: 
+TODO PRE-RELEASE: 
   * nicely styled marker popup balloons with extended stats
+  * tell server which markers we have. we semi-saturate a core with 1 client (doh)
   * about page and colofon. write copy.
   * engage weaponized tweeting array
 

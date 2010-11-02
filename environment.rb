@@ -36,7 +36,7 @@ configure :production do
 
   # before we release
   use Rack::Auth::Basic do |username, password|
-    username == 'secret' && password == 'secret'
+    username == 'secret' && password == 'pass'
   end
 
   use Rack::Cache,

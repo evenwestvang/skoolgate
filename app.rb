@@ -1,7 +1,15 @@
 require './environment'
 
+before do
+  response['Expires'] = (Time.now + 60*60*24*356*3).httpdate
+end
+
 get '/' do
   haml :index
+end
+
+get '/about' do
+  haml :about
 end
 
 get '/get_markers/:lat/:lon/:lat2/:lon2/:detail_level' do
