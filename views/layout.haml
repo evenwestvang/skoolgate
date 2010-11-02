@@ -24,46 +24,46 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
   %body
-    #map_canvas_container
+    #container
       #map_canvas
-    - if false
-      %form.search{:id => "search", :method => "post"}
-        %input{:placeholder => 'skole, fylke eller kommune', :name => "place", :size => 30, :class => "text", :length => 20}
-        %input{:type => "button", :value => "Søk", }
+      - if false
+        %form.search{:id => "search", :method => "post"}
+          %input{:placeholder => 'skole, fylke eller kommune', :name => "place", :size => 30, :class => "text", :length => 20}
+          %input{:type => "button", :value => "Søk", }
 
-    %header
-      .header_top
-        %h1 NASJONALE PRØVER
-        %nav.year_selector
-          %ul
-            %li
-              = link_to("2008", "/year/2008", :class => "selected")
-            %li
-              = link_to("2009", "/missing_data")
-            %li
-              = link_to("2010", "/not_yet")
-        %nav
-          %ul
-            %li
-              = link_to("hjem", "/")
-            %li
-              = link_to("Om denne siden", "/about")
-            -if false
+      %header
+        .header_top
+          %h1 NASJONALE PRØVER
+          %nav.year_selector
+            %ul
               %li
-                = link_to("kommuner og fylker", "/counties")
-      .header_search_ui
-        #view_stats
-          &nbsp;
-    %section
-      = yield
-    %footer
-      %ul
-        %li.muted
-          skoleporten.bengler.no er et 
-          =link_to("Bengler-prosjekt", "http://bengler.no")
-        %li.twitter
-          = link_to("Følg skoleporten på Twitter", "http://twitter.com/skoleporten")
-        %li
-          = link_to("Kolofon", "/colofon")
-        %li
-          = link_to("Github", "http://github.com/evenwestvang/skoolgate")
+                = link_to("2008", "/year/2008", :class => "selected")
+              %li
+                = link_to("2009", "/missing_data")
+              %li
+                = link_to("2010", "/not_yet")
+          %nav
+            %ul
+              %li
+                = link_to("hjem", "/")
+              %li
+                = link_to("Om denne siden", "/about")
+              -if false
+                %li
+                  = link_to("kommuner og fylker", "/counties")
+        .header_search_ui
+          #view_stats
+            &nbsp;
+      %section
+        = yield
+      %footer
+        %ul
+          %li.muted
+            skoleporten.bengler.no er et 
+            =link_to("Bengler-prosjekt", "http://bengler.no")
+          %li.twitter
+            = link_to("Følg skoleporten på Twitter", "http://twitter.com/skoleporten")
+          %li
+            = link_to("Github", "http://github.com/evenwestvang/skoolgate")
+          %li
+            = link_to("Kolofon", "/colofon")
