@@ -1,5 +1,7 @@
 require './environment'
 
+require 'benchmark'
+
 KLASSES = ["School", "Municipality"]
 
 get '/marker_info/:marker_id' do
@@ -14,18 +16,25 @@ end
 get '/get_markers/:lat/:lon/:lat2/:lon2/:detail_level' do
   content_type 'text/json', :charset => 'utf-8'
   box = [[params[:lat].to_f, params[:lon].to_f], [params[:lat2].to_f, params[:lon2].to_f]]
-  if params[:detail_level] == "0"
-    objects = School.where(:location.within => {"$box" => box}).only(:name, :location, :result_average, :student_body_count)
-  else
-    objects = Municipality.where(:location.within => {"$box" => box}).only(:name, :location, :result_average, :student_body_count)
+  objects = nil
+  time = Benchmark.measure do
+    if params[:detail_level] == "0"
+      objects = School.where(:location.within => {"$box" => box}).only(:name, :location, :result_average, :student_body_count)
+    else
+      objects = Municipality.where(:location.within => {"$box" => box}).only(:name, :location, :result_average, :student_body_count)
+    end
   end
-  objects.map { |o| {
-    :id => o.class.to_s << "_" << o.id.to_s, 
-    :body => o.student_body_count, 
-    :name => o.name, 
-    :avg => o.result_average, 
-    :lat => o.location[0], 
-    :lon => o.location[1]}}.to_json
+  puts "finding #{time}"
+  time = Benchmark.measure do
+    objects.map { |o| {
+      :id => o.class.to_s << "_" << o.id.to_s, 
+      :body => o.student_body_count, 
+      :name => o.name, 
+      :avg => o.result_average, 
+      :lat => o.location[0], 
+      :lon => o.location[1]}}.to_json
+  end
+    puts "to_json #{time}"
 end
 
 get '/stylesheet.css' do
