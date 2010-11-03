@@ -25,8 +25,9 @@ get '/get_markers/:lat/:lon/:lat2/:lon2/:detail_level' do
     end
   end
   puts "finding #{time}"
+  json = []
   time = Benchmark.measure do
-    objects.map { |o| {
+    json = objects.map { |o| {
       :id => o.class.to_s << "_" << o.id.to_s, 
       :body => o.student_body_count, 
       :name => o.name, 
@@ -35,6 +36,7 @@ get '/get_markers/:lat/:lon/:lat2/:lon2/:detail_level' do
       :lon => o.location[1]}}.to_json
   end
     puts "to_json #{time}"
+    json
 end
 
 get '/stylesheet.css' do
