@@ -2,5 +2,24 @@
   $(function(){
     resizeFrame();
     initialize();
-    /* setMarkers(map, schools); */
   });
+  
+%script{:id => "schoolInfoBoxTemplate", :type => "text/x-jquery-tmpl"}
+  .school_infobox
+    .level_name ${level_name}
+    %h2 ${name}
+    .address ${address}
+
+%script{:id => "schoolInfoBoxTemplateTestSet", :type => "text/x-jquery-tmpl"}
+  %ul#test_list
+    %li.year ${year}. klasse
+
+%script{:id => "schoolInfoBoxTemplateTest", :type => "text/x-jquery-tmpl"}
+  %li
+    .result ${result} / ${max_score}
+    ${humanizedTestCode}
+    .result_box_outer
+      .result_box{:style => "width:${percentage}%;"}
+
+%script{:id => "schoolInfoBoxTemplateNoData", :type => "text/x-jquery-tmpl"}
+  Ingen prøver levert for dette trinnet

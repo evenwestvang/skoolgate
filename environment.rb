@@ -34,11 +34,6 @@ configure :production do
     config.persist_in_safe_mode = false
   end
 
-  # before we release
-  use Rack::Auth::Basic do |username, password|
-    username == 'secret' && password == 'pass'
-  end
-
   use Rack::Cache,
     :verbose     => true,
     :metastore   => 'memcached://localhost:11211/meta',

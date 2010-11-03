@@ -11,7 +11,7 @@
     %script{:type => "text/javascript",
       :src  => "http://ajax.googleapis.com/ajax/libs/chrome-frame/1/CFInstall.min.js"}
     %script{:type => "text/javascript",
-      :src  => "/jquery-1.4.3.min.js"}
+      :src  => "/js_libs_min.js"}
     %script{:type => "text/javascript",
       :src  => "/app.js"}
     :javascript
@@ -30,18 +30,18 @@
         %form.search{:id => "search", :method => "post"}
           %input{:placeholder => 'skole, fylke eller kommune', :name => "place", :size => 30, :class => "text", :length => 20}
           %input{:type => "button", :value => "Søk", }
-
       %header
         .header_top
-          %h1 NASJONALE PRØVER
+          %h1 
+            = link_to("NASJONALE PRØVER", "/", :class => "selected")
           %nav.year_selector
             %ul
               %li
-                = link_to("2008", "/year/2008", :class => "selected")
+                = link_to("2008", "/", :class => "selected")
               %li
                 = link_to("2009", "/missing_data")
               %li
-                = link_to("2010", "/not_yet")
+                = link_to("2010", "/missing_data")
           %nav
             %ul
               %li
@@ -65,5 +65,6 @@
             = link_to("Følg skoleporten på Twitter", "http://twitter.com/skoleporten")
           %li
             = link_to("Github", "http://github.com/evenwestvang/skoolgate")
-          %li
-            = link_to("Kolofon", "/colofon")
+          - if false
+            %li
+              = link_to("Kolofon", "/colofon")

@@ -1,6 +1,7 @@
 /* Inits */
 
 var map = null;
+var currentInfoBox = null;
 
 function initialize() {
   jQuery.event.add(window, "resize", resizeFrame);
@@ -8,7 +9,7 @@ function initialize() {
      mode: "overlay",
      destination: "http://skoleporten.bengler.no"
    });
-   init_maps();
+   initMaps();
 }
 
 function resizeFrame() {
@@ -17,8 +18,8 @@ function resizeFrame() {
 
 /* Maps */
 
-function init_maps() {
-  var latlng = new google.maps.LatLng(59.919973705097505, 10.711495568481437);
+function initMaps() {
+  var latlng = new google.maps.LatLng(59.86176086468102, 10.75612752648925);
   var myOptions = {
     zoom: 11,
     center: latlng,
@@ -39,22 +40,36 @@ function init_maps() {
 function MarkerKeeper() {
   var markers = new Array;
   var markerHash = new Object;
-  var previous_query_time = new Date().getTime();
-  var show_primaries = true;
-  var show_secondaries = true;
-  var detail_level = 0;
+  var previousQueryTime = new Date().getTime();
+  var showPrimaries = true;
+  var showSecondaries = true;
+  var detailLevel = 0;
 
   this.map = map;
 
-  google.maps.event.addListener(this.map, "bounds_changed", function() {
+  google.maps.event.addListener(this.map, "click", function() {
+    closeAnyInfoboxes();
+  });
+  google.maps.event.addListener(this.map, "drag", function() {
     getMarkersForBounds();
   });
-  google.maps.event.addListener(this.map, "zoom_changed", function() {
-    zoomChanged();
+  google.maps.event.addListener(this.map, "idle", function() {
+    getMarkersForBounds(true);
   });
   google.maps.event.addListenerOnce(this.map, "tilesloaded", function() {
     getMarkersForBounds();
   });
+  google.maps.event.addListener(this.map, "zoom_changed", function() {
+    closeAnyInfoboxes();
+    zoomChanged();
+  });
+
+  function closeAnyInfoboxes() {
+    if (currentInfoBox != undefined) {
+      currentInfoBox.close();
+      currentInfoBox = undefined;
+    }
+  }
 
   function addMarker(marker) {
     marker.setMap(this.map);  
@@ -86,9 +101,9 @@ function MarkerKeeper() {
 
   function updateViewStats() {
     disp_list = new Array
-    if (detail_level == 0) {
-      if (show_primaries) disp_list.push("barneskoler");
-      if (show_secondaries) disp_list.push("ungdomsskoler");
+    if (detailLevel == 0) {
+      if (showPrimaries) disp_list.push("barneskoler");
+      if (showSecondaries) disp_list.push("ungdomsskoler");
     } else {
       disp_list.push("kommuner");
     }
@@ -98,35 +113,37 @@ function MarkerKeeper() {
 
   function zoomChanged() {
     zoom = map.getZoom();
-    previous_level = detail_level;
+    previous_level = detailLevel;
     if (zoom < 9) {
-      detail_level = 1;
+      detailLevel = 1;
     } else {
-      detail_level = 0;
+      detailLevel = 0;
     }
-    if (detail_level != previous_level) {
+    if (detailLevel != previous_level) {
       cullAllMarkers();
-      if (detail_level == 1) {
+      if (detailLevel == 1) {
         $('.header_search_ui').addClass('less_details');
       } else {
         $('.header_search_ui').removeClass('less_details');        
       }
     }
+    getMarkersForBounds();
   }
 
-  function getMarkersForBounds() {
+  function getMarkersForBounds(force) {
     cullMarkersByBounds()
     var current_time = new Date().getTime();
-    if (current_time - this.previous_query_time < 200) return;
-    this.previous_query_time = current_time;
+    if (current_time - this.previousQueryTime < 600 && !force) return;
+    this.previousQueryTime = current_time;
     var bounds = this.map.getBounds();
     queryPack = [bounds.getSouthWest().lat(), bounds.getSouthWest().lng(), 
-                 bounds.getNorthEast().lat(), bounds.getNorthEast().lng(), detail_level].join('/');
-    $.getJSON('get_markers/' + queryPack, function(data, textStatus) {
-      $.each(data, function(i, item) {
+                 bounds.getNorthEast().lat(), bounds.getNorthEast().lng(),
+                 detailLevel].join('/');
+    $.getJSON('/get_markers/' + queryPack, function(data, textStatus) {
+      $(data).each(function(i, item) {
         if (markerHash[item.id] == undefined) {
           var size = Math.ceil((item.body / 25)+11);
-          if (detail_level != 0) {
+          if (detailLevel != 0) {
             size = (size / 25) + 10;
           }
           var latlng = new google.maps.LatLng(item.lat, item.lon);
@@ -143,6 +160,9 @@ function MarkerKeeper() {
                 icon: image
             });
           addMarker(marker);
+          google.maps.event.addListener(marker, 'click', function() {
+            markerClicked(map,marker);
+          });
         }
       }); 
     updateViewStats();
@@ -150,15 +170,76 @@ function MarkerKeeper() {
   };
   return { 
   }
+
+  function markerClicked(map, marker) {
+    var boxText = document.createElement("div");
+    // We should probably insert this into the the DOM through sass and read it from there
+    boxText.style.cssText = "border: 1px solid black;margin-top: 8px; background: black; padding: 5px; border-radius:3px; -moz-border-radius:3px; webkit-border-radius:3px; -moz-box-shadow #000 5px 5px 10px; -webkit-box-shadow #000 5px 5px 10px; box-shadow #000 5px 5px 10px;";
+    // Offloading server. Doing all processing client side
+    $.getJSON('/marker_info/' + marker.ident, function(data, textStatus) {
+
+      var primarySchoolTests = new Array
+      var secondarySchoolTests = new Array
+
+      $(data.test_results).each(function(i,result) {
+        if (result.school_year == 5) {
+          primarySchoolTests.push(result); 
+        } else {
+          secondarySchoolTests.push(result); 
+        }
+      });
+      var yearNames = []
+      if (primarySchoolTests.length > 0) {
+        yearNames.push ("Barneskole")
+      } 
+      if (secondarySchoolTests.length > 0) {
+        yearNames.push ("Ungdomsskole")
+      }
+      data.level_name = yearNames.join(' og ');
+      
+      infoBox = $("#schoolInfoBoxTemplate").tmpl(data).appendTo($(boxText));
+      test_sets = [primarySchoolTests, secondarySchoolTests];
+      $(test_sets).each(function(i, set) {
+        if (set.length > 0) {
+          set_node = $("#schoolInfoBoxTemplateTestSet").tmpl({year: set[0].school_year}).appendTo(infoBox);
+          $(set).each(function(i,result) {
+            if(result.school_year == 5) {
+              result.max_score = 3;
+            } else if (result.school_year == 8) {
+              result.max_score = 5;
+            }
+            if (result.normalized_result == undefined) {
+              result.normalized_result = 0;
+              result.result = 0;
+            }
+            result.percentage = result.normalized_result * 100;
+            result.humanizedTestCode = humanizeTestCode(result.test_code);
+            $("#schoolInfoBoxTemplateTest").tmpl(result).appendTo($(set_node));
+          })
+        };
+      })
+    });
+
+    closeAnyInfoboxes();
+    infoBoxOptions.content = boxText;
+    currentInfoBox = new InfoBox(infoBoxOptions);                
+    currentInfoBox.open(map, marker);
+  }
+
+  function humanizeTestCode(test_code) {
+    if (test_code.match('REG')) { return "regning" };
+    if (test_code.match('LES')) { return "lesning" };
+    if (test_code.match('ENG')) { return "engelsk" };
+  }
+
 };
 
 var ButtonFactory = (function() {
   return new function() {
-
     var h = 1;
     var s = 100;
     var l = 45;
-    var a = .80;
+    var a = 0.8;
 
     var getColor = function(val) {
       return "hsla(" + val +"," + s + "%," + l +"%," + a +")";
@@ -172,7 +253,6 @@ var ButtonFactory = (function() {
     var drawRect = function(context, x, y, width, height, size) {
       var radius = 5
       width = height = size;
-
       context.beginPath();
       context.moveTo(x + radius, y);
       context.lineTo(x + width - radius, y);
@@ -189,12 +269,9 @@ var ButtonFactory = (function() {
 
     this.createCanvas = function(t, size) {
       var canvas = document.createElement("canvas");
-
       canvas.width = size;
       canvas.height = size;
-
       var context = canvas.getContext("2d");
-
       if(t != 0 && t != undefined) {
         var t = t - 0.5
         var log_curve = (1 / (1 + Math.pow(Math.E,-t))) - 0.5
@@ -205,34 +282,13 @@ var ButtonFactory = (function() {
         var color0 = "Silver";
         var stroke = "rgba(100,100,100,1)"
       }
-
-      label = parseInt(t)
       context.clearRect(0,0,size,size);
-
       context.fillStyle = color0;
       context.strokeStyle = stroke;
-
       drawRect(context, 0, 0, size, size, size);
       context.fill();
       context.stroke();
-
-      // context.fillStyle = "white";
-      // context.strokeStyle = "black"
-      // 
-      // // Render Label
-      // context.font = "normal 10px Arial";
-      // context.textBaseline  = "top";
-      // 
-      // var textWidth = context.measureText(label);
-
-      // centre the text.
-      // context.fillText(label,
-      //   Math.floor((width / 2) - (textWidth.width / 2)),
-      //   4
-      // );
-
       return canvas;
-
     };
 
     this.create = function(label, range) {
@@ -242,6 +298,24 @@ var ButtonFactory = (function() {
   }
 })();
 
+// Config hashes
+
+var infoBoxOptions = {
+  disableAutoPan: false,
+  maxWidth: 0,
+  pixelOffset: new google.maps.Size(-140, -90),
+  zIndex: 0,
+  boxStyle: {
+    opacity: 1,
+    width: "340px"
+   },
+  closeBoxMargin: "10px 2px 2px 2px",
+  closeBoxURL: "http://www.google.com/intl/en_us/mapfiles/close.gif",
+  infoBoxClearance: new google.maps.Size(1, 1),
+  isHidden: false,
+  pane: "floatPane",
+  enableEventPropagation: false
+};
 
 var style = [
   {

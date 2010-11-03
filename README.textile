@@ -1,8 +1,6 @@
 
 *Presents data from Norwegian national school benchmarks.*
 
-Nothing to see here yet. Documentation forthcoming. 
-
 _Source data set_
 http://www.dagbladet.no/nyheter/2008/11/13/553824.html / alt for 2008
 
@@ -17,20 +15,15 @@ _Description_
 * NPENG05 = engelsk for 5.-klassingene, NPENG08 = engelsk for 8.klassingene.
 
 TODO PRE-RELEASE: 
-  * nicely styled marker popup balloons with extended stats
-  * tell server which markers we have. we semi-saturate a core with 1 client (doh)
-  * about page and colofon. write copy.
   * engage weaponized tweeting array
 
 SOMEDAY:
+  * tell server which markers we have. we semi-saturate a core with 1 client (doh)
   * aggregate results by test type and year for filtering
   * ranked static stats pages: counties / municipalities w/ map link
   * windowed google streetview panoramas on #about page
   
 DONE:
-  * http cache with rack::cache and memcached
-  * deploy production environment
-  * push project to GitHub
   * setup Sinatra-app with MongoDB and Mongoid glue
   * read CSV data
   * Scrape school adresses from skoleporten
@@ -52,4 +45,9 @@ DONE:
   * apply Google chrome frame for the IE masses
   * stuff Google geocoding key in environment
   * render municipalities and counties for zoomed out levels
+  * push project to GitHub
+  * nicely styled marker popup balloons with extended stats
+  * about page and colofon. write copy.
+  * http cache with rack::cache and memcached
+  * deploy production environment
   

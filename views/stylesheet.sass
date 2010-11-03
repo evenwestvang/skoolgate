@@ -10,6 +10,7 @@ $header: rgba(10,10,10,0.9)
 
 $black: #333
 $lite: #999
+$very_lite: #666
 $white: #fff
 $white_lite: darken($white, 15%) 
 
@@ -59,6 +60,9 @@ body
       :color $white_lite
       :font-weight bold
       :margin 0
+    h1
+      a
+        :color $white_lite
 
     nav
       @include list_as_nav
@@ -88,6 +92,50 @@ body
   .header_search_ui.less_details
     :background-color rgba(255,100,10,0.8)
 
+
+.about_box
+  :position absolute
+  :top 10px
+  :left 20px
+  :padding 10px
+  :width 50%
+  :background-color $footer
+  
+  .section
+    :margin-bottom 15px
+
+  h2
+    :display block
+    :float left
+    :margin 3px 10px 10px 00px
+    :padding 10px
+    :width 200px
+    :background-color $accent
+    :color #000
+  
+  h2.contact
+    :background-color #ff0
+    :width 90%
+
+  h2.contact a
+    :text-decoration underline
+    :font-style italic
+    :color #000
+  
+  p
+    :font-size 12px
+    :display inline
+    :text-transform none
+    :line-height 18px
+
+  ul
+    :display inline-block
+    :margin 0
+    :text-transform none
+    
+    li
+      :margin-bottom 2px
+    
 footer
   @include list_as_nav
   :background-color $footer
@@ -110,4 +158,34 @@ footer
       :padding-left 20px
       :background url(/tweet_bird.png) no-repeat 0px -1px
 
-  
+.school_infobox
+  h2
+    :margin 0px 0px 3px 0px
+
+  .address
+    :color $lite
+
+  ul#test_list
+    :list-style-type none
+    :display inline-block
+    :margin 8px 10px 0px 0px
+    :width 130px
+    :background-color #0a0a0a
+    :border 2px dotted #000
+    :padding 5px 10px 5px 10px
+    li
+      :display block
+      .result_box_outer
+        :background-color #222
+        :margin 2px 0px 6px 0px
+      .result_box
+        :height 15px
+        :background-color #1af
+        @include shadows(#000, 2px, 0px, 6px)
+      .result
+        :float right
+        :color $very_lite
+    li.year
+      :font-size 14px
+      :font-weight bold
+      :margin-bottom 6px

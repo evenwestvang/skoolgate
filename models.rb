@@ -41,11 +41,6 @@ class TestResult
  validates_presence_of :year
 
  before_save :set_normalized_result
-
- def self.humanized_name
-   map = { "REG" => "regning", "LES" => "lesning", "ENG" => "engelsk" }
-   map.each_pair { |k,v| return v if test_code.match(k)} 
- end
 end
 
 class County
