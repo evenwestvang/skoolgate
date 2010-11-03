@@ -14,14 +14,11 @@ _Description_
 * NPLES05 = lesning for 5.-klassingene, NPLES08 = lesning for 8.-klassingene.
 * NPENG05 = engelsk for 5.-klassingene, NPENG08 = engelsk for 8.klassingene.
 
-TODO PRE-RELEASE: 
-  * engage weaponized tweeting array
-
-SOMEDAY:
-  * tell server which markers we have. we semi-saturate a core with 1 client (doh)
+TODO:
+  * tell server which markers we already have
   * aggregate results by test type and year for filtering
   * ranked static stats pages: counties / municipalities w/ map link
-  * windowed google streetview panoramas on #about page
+  * windowed autopanning google streetview panos on #about page. mmmm. tasty.
   
 DONE:
   * setup Sinatra-app with MongoDB and Mongoid glue
@@ -50,4 +47,6 @@ DONE:
   * about page and colofon. write copy.
   * http cache with rack::cache and memcached
   * deploy production environment
+  * engage weaponized tweeting array
+
   
