@@ -303,7 +303,7 @@ var ButtonFactory = (function() {
 var infoBoxOptions = {
   disableAutoPan: false,
   maxWidth: 0,
-  pixelOffset: new google.maps.Size(-140, -90),
+  pixelOffset: new google.maps.Size(-140, 10),
   zIndex: 0,
   boxStyle: {
     opacity: 1,
