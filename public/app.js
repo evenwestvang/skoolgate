@@ -133,7 +133,7 @@ function MarkerKeeper() {
   function getMarkersForBounds(force) {
     cullMarkersByBounds()
     var current_time = new Date().getTime();
-    if (current_time - this.previousQueryTime < 1000 && !force) return;
+    if (current_time - this.previousQueryTime < 500 && !force) return;
     this.previousQueryTime = current_time;
     var bounds = this.map.getBounds();
     queryPack = [bounds.getSouthWest().lat(), bounds.getSouthWest().lng(), 
