@@ -7,6 +7,7 @@ require 'haml'
 require 'sass'
 require './models'
 require 'rack/cache'
+require 'yajl/json_gem'
 
 set :root, File.dirname(__FILE__) # <- do we need this? // check to see if templating breaks without it
 set :haml, :format => :html5

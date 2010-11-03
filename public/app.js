@@ -114,7 +114,7 @@ function MarkerKeeper() {
   function zoomChanged() {
     zoom = map.getZoom();
     previous_level = detailLevel;
-    if (zoom < 9) {
+    if (zoom < 10) {
       detailLevel = 1;
     } else {
       detailLevel = 0;
@@ -133,7 +133,7 @@ function MarkerKeeper() {
   function getMarkersForBounds(force) {
     cullMarkersByBounds()
     var current_time = new Date().getTime();
-    if (current_time - this.previousQueryTime < 600 && !force) return;
+    if (current_time - this.previousQueryTime < 1000 && !force) return;
     this.previousQueryTime = current_time;
     var bounds = this.map.getBounds();
     queryPack = [bounds.getSouthWest().lat(), bounds.getSouthWest().lng(), 

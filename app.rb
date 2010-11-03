@@ -25,7 +25,7 @@ get '/get_markers/:lat/:lon/:lat2/:lon2/:detail_level' do
     end
   end
   puts "finding #{time}"
-  json = []
+  json = nil
   time = Benchmark.measure do
     json = objects.map { |o| {
       :id => o.class.to_s << "_" << o.id.to_s, 
