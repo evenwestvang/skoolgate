@@ -14,10 +14,19 @@ _Description_
 * NPLES05 = lesning for 5.-klassingene, NPLES08 = lesning for 8.-klassingene.
 * NPENG05 = engelsk for 5.-klassingene, NPENG08 = engelsk for 8.klassingene.
 
+.plan:
+  * add new test data
+    - rework models
+    - rework statistics
+    - refactor display code. 'tis ugly
+    - rework display code
+  * add high quality numbers for student count & addresses
+  * run geocoding batch
+  * client must tell server which markers it has to avoid lotsa retransmission
+
 TODO:
-  * tell server which markers we already have
   * aggregate results by test type and year for filtering
-  * ranked static stats pages: counties / municipalities w/ map link
+  * ranked static stats pages: counties / municipalities w/ map links
   * windowed autopanning google streetview panos on #about page. mmmm. tasty.
   
 DONE:
