@@ -15,6 +15,7 @@ _Description_
 * NPENG05 = engelsk for 5.-klassingene, NPENG08 = engelsk for 8.klassingene.
 
 .plan:
+  * refactor js – i have more javascript fu now. thank you shiny books.
   * add new test data
     - rework models
     - rework statistics

@@ -2,30 +2,14 @@ class Io < Thor
 
   # Don't read this code.
 
-  desc "run_all", "Clean collections and run all import tasks"
-  def run_all
-    invoke :drop_schools
-    invoke :import_schools_from_csv
-    invoke :import_test_data_from_csv
-    invoke :calculate_averages
-  end
+  SCHOOL_CSV_FIELDS = [:name, :municipality, :county, :address, :student_body_count, :lat, :lon]
 
-  desc "drop_schools", "Indeed"
-  def drop_schools
-    require './environment'
-
-    puts "Nuking collections…"
-    School.delete_all
-    puts "Done\n"
-  end
-
-  desc "dump_to_csv FILENAME", "Dump to file"
-  def dump_to_csv(filename = "./data/geocoded_schools_2008_100_missing.csv")
+  desc "dump_schools_to_csv FILENAME", "Dump to file"
+  def dump_schools_to_csv(filename = "./data/geocoded_schools_2008.csv")
     require './environment'
     require 'CSV'
     CSV.open(File.expand_path(filename), "wb") do |csv|
-      csv << ["Name","Municipality", "County", 
-        "Address", "Student body count", "Latitude", "Longitude"]
+      csv << SCHOOL_CSV_FIELDS.map { |t| t.to_s }
       School.find(:all).asc(:location).each do |s|
         lat, lon = nil
         if s.location
@@ -36,6 +20,77 @@ class Io < Thor
                 s.address, s.student_body_count, lat, lon]
       end
     end
+  end
+
+  desc "import_schools_from_csv FILENAME", "Nuke school collection and import school data from CSV"
+  def import_schools_from_csv(filename = "data/geocoded_schools_2008.csv")
+    # Hinna skole	Stavanger	Rogaland	Ordfører Tveteraas Gate 11, 4020 STAVANGER	58.9164337	5.7217672
+    require './environment'
+    require 'CSV'
+    puts "\n- Deleting schools…"
+    School.delete_all
+    puts "- School CSV --> Mongo…"
+    first = true
+    CSV.parse(File.open(filename)) do |row|
+      # Skip first row. Unpretty.
+      if first
+        first = false
+        next
+      end
+      d = Hash[*SCHOOL_CSV_FIELDS.zip(row).flatten]
+      find_or_create_counties_and_municipalities(d)
+      location = nil
+      location = [d[:lat].to_f, d[:lon].to_f] if d[:lat] and d[:lon]
+      s = School.new({
+        :name => d[:name], :county => d[:county], :municipality => d[:municipality], :student_body_count => d[:student_body_count], :address => d[:address], :location => location
+      })
+      s.save!
+      print "."
+    end
+    puts "\nImported #{School.count} schools in #{County.count} counties in #{Municipality.count} municipalities"
+    puts "Finished"
+  end
+
+  desc "import_test_data_from_csv", "Import tests from CSV"
+  def import_test_data_from_csv
+    require './environment'
+    years = [2009, 2008]
+    name_mapping = {
+      "Ekholt 1-10 skole - Avd Ungdomsveien" => "Ekholt 1-10 skole",
+      "Havnås Oppvekstsenter" => "Havnås Oppvekstsenter - Avdeling skole",
+      "Rykkinn skole - Avdeling Berger" => "Rykkinn skole",
+      "Steinerskolen i Bærum - GRS" => "Steinerskolen i Bærum",
+      "Drøbak Montessori skole AS" => "Drøbak Montessori skole"
+    }
+    allow = ["Grunnskolen Oslo Kristne Senter"]
+
+    puts "Test CSV --> Mongo…"
+    puts "- Cleaning test data off of schools"
+    School.all.each do |s| 
+      unless s.test_results.empty?
+        test_results = []
+        s.save!
+      end
+    end
+    years.each do |year|
+      puts "- Importing year #{year}"
+      count = 0
+      filename = "./data/national_benchmarks_#{year}.csv"
+      File.open(filename, 'rb').readlines.each do |line|
+        school_data, test_data = populate_test_data_columns(line, year)
+        school_data[:name] = name_mapping[school_data[:name]] if name_mapping[school_data[:name]]
+        schools = School.find(:conditions => school_data)
+        raise "Could not find school for \n #{line}" if schools.empty?
+        raise "Disambiguana – Too many schols for \n #{line}" if schools.length > 1
+        school = schools.first
+        school.test_results << TestResult.new(test_data)
+        school.save
+        count += 1
+        print "."
+      end
+      puts "Got #{count} results."
+    end
+    puts "Finished"
   end
 
   desc "calculate_averages", "Run the stats for schools, munis and counties"
@@ -64,69 +119,12 @@ class Io < Thor
     end
   end
 
-  desc "import_schools_from_csv FILENAME", "Nuke DB and import school data from CSV"
-  def import_schools_from_csv(filename = "data/geocoded_schools_2008_100_missing.csv")
-    # Hinna skole	Stavanger	Rogaland	Ordfører Tveteraas Gate 11, 4020 STAVANGER	58.9164337	5.7217672
-    require './environment'
-    require 'CSV'
-    puts "School CSV --> Mongo…"
-    first = true
-    CSV.parse(File.open(filename)) do |row|
-      # Skip first row
-      if first
-        first = false
-        next
-      end
-      d = Hash[*[:name, :municipality, :county, :address, :student_body_count, :lat, :lon].zip(row).flatten]
-      county = County.find_or_create_by(:name => d[:county])
-      unless municipality = Municipality.first(:conditions => {:name => d[:municipality], :in_county => d[:county]})
-        municipality = Municipality.new(:name => d[:municipality])
-        municipality.in_county = d[:county]
-        municipality.save!
-        puts "\nMunicipality #{municipality.name} in #{municipality.in_county} created"
-      end
-      location = nil
-      location = [d[:lat].to_f, d[:lon].to_f] if d[:lat] and d[:lon]
-      s = School.new({
-        :name => d[:name], :county => d[:county], :municipality => d[:municipality], :student_body_count => d[:student_body_count], :address => d[:address], :location => location
-      })
-      s.save!
-      print "."
-    end
-    puts "\nImported #{School.count} schools in #{County.count} counties in #{Municipality.count} municipalities"
-    puts "Finished"
-  end
-
-  desc "import_test_data_from_csv FILENAME", "Import tests from CSV"
-  def import_test_data_from_csv(filename = "data/nasjonaleprøver_2008.csv")
-    require './environment'
-    puts "Test CSV --> Mongo…"
-    # Clean
-    puts "- cleaning"
-    School.all.each do |s| 
-      unless s.test_results.empty?
-        test_results = []
-        s.save!
-      end
-    end
-    # Import
-    puts "- importing"
-    File.open(filename, 'rb').readlines.each do |line|
-      school_data, test_data = populate_test_data_columns(line)
-      schools = School.find(:conditions => school_data)
-      raise "Could not find school #{line}" if schools.empty?
-      raise "Too many schols for #{line}" if schools.length > 1
-      school = schools.first
-      school.test_results << TestResult.new(test_data)
-      school.save
-      print "."
-    end
-    puts "Finished"
-  end
-
   private
-  
-  def populate_test_data_columns(line) 
+
+
+  # TODO: Write a small DSL for CSV files :)
+
+  def populate_test_data_columns(line, year) 
     # Fylke;Kommune;Skole;Prøvekode;Gjennomsnitt;% M-nivå 1;% M-nivå 2;% M-nivå 3;% M-nivå 4;% M-nivå 5
     row = line.chomp.split(";")
     school = { :name => row[2],  :county => row[0], :municipality => row[1] }
@@ -134,7 +132,7 @@ class Io < Thor
     test = { :test_code => row[3] }
     test[:result] = row[4].gsub(',','.').to_f
     test[:result] = nil if test[:result] == 0
-    test[:year] = 2008
+    test[:year] = year
     test[:school_year] = test[:test_code].match(/0(\d)/)[1].to_i
 
     if test[:result]
@@ -148,6 +146,20 @@ class Io < Thor
     end
 
     return school, test
+  end
+
+
+  no_tasks do
+    def find_or_create_counties_and_municipalities(d)
+      county = County.find_or_create_by(:name => d[:county])
+      unless municipality = Municipality.first(:conditions => {:name => d[:municipality], :in_county => d[:county]})
+        municipality = Municipality.new(:name => d[:municipality])
+        municipality.in_county = d[:county]
+        municipality.save!
+        puts "\nMunicipality #{municipality.name} in #{municipality.in_county} created"
+      end
+    end
+
   end
 
 end
