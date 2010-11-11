@@ -35,143 +35,149 @@ function initMaps() {
   map.mapTypes.set('styled', styledMap);
   map.setMapTypeId('styled');
   var markerKeeper = new MarkerKeeper(map);
-}
 
-function MarkerKeeper() {
-  var markers = new Array;
-  var markerHash = new Object;
-  var previousQueryTime = new Date().getTime();
-  var showPrimaries = true;
-  var showSecondaries = true;
-  var detailLevel = 0;
-
-  this.map = map;
-
+  
   google.maps.event.addListener(this.map, "click", function() {
-    closeAnyInfoboxes();
+    markerKeeper.closeAnyInfoboxes();
   });
   google.maps.event.addListener(this.map, "drag", function() {
-    getMarkersForBounds();
+    markerKeeper.getMarkersForBounds();
   });
   google.maps.event.addListener(this.map, "idle", function() {
-    getMarkersForBounds(true);
+    markerKeeper.getMarkersForBounds(true);
   });
   google.maps.event.addListenerOnce(this.map, "tilesloaded", function() {
-    getMarkersForBounds();
+    markerKeeper.getMarkersForBounds();
   });
   google.maps.event.addListener(this.map, "zoom_changed", function() {
-    closeAnyInfoboxes();
-    zoomChanged();
+    markerKeeper.closeAnyInfoboxes();
+    markerKeeper.zoomChanged();
   });
+}
 
-  function closeAnyInfoboxes() {
+function MarkerKeeper(map) {
+  this.markers = new Array;
+  this.markerHash = new Object;
+  this.previousQueryTime = new Date().getTime();
+  this.showPrimaries = true;
+  this.showSecondaries = true;
+  this.detailLevel = 0;
+
+  this.test = "foo";
+  this.map = map;
+
+  this.closeAnyInfoboxes = function() {
     if (currentInfoBox != undefined) {
       currentInfoBox.close();
       currentInfoBox = undefined;
     }
   }
 
-  function addMarker(marker) {
+  this.addMarker = function(marker) {
     marker.setMap(this.map);  
-    markers.push(marker);
-    markerHash[marker.ident] = true
+    this.markers.push(marker);
+    this.markerHash[marker.ident] = true
   }
 
-  function cullAllMarkers() {
-    markers = markers.filter(function(m) {
-      deleteMarker(m);
+  this.cullAllMarkers = function() {
+    this.markers = this.markers.filter(function(m) {
+      this.deleteMarker(m);
     });
   }
 
-  function cullMarkersByBounds() {
+  this.cullMarkersByBounds = function() {
     var bounds = this.map.getBounds();
-    markers = markers.filter(function(m) {
+    this.markers = this.markers.filter(function(m) {
       if (!bounds.contains(m.position)) {
-        deleteMarker(m);
+        this.deleteMarker(m);
         return false
       }
       return true
     });
   }
 
-  function deleteMarker(marker) {
-    marker.setMap(null);
-    delete markerHash[marker.ident];
+  this.deleteMarker = function(marker) {
+    this.marker.setMap(null);
+    delete this.markerHash[marker.ident];
   }
 
-  function updateViewStats() {
+  this.updateViewStats = function() {
     disp_list = new Array
-    if (detailLevel == 0) {
-      if (showPrimaries) disp_list.push("barneskoler");
-      if (showSecondaries) disp_list.push("ungdomsskoler");
+    if (this.detailLevel == 0) {
+      if (this.showPrimaries) disp_list.push("barneskoler");
+      if (this.showSecondaries) disp_list.push("ungdomsskoler");
     } else {
       disp_list.push("kommuner");
     }
-    s = "Viser " + markers.length + " " + disp_list.join(' og ')
+    s = "Viser " + this.markers.length + " " + disp_list.join(' og ')
     $('#view_stats').text(s);
   }
 
-  function zoomChanged() {
+  this.zoomChanged = function() {
     zoom = map.getZoom();
-    previous_level = detailLevel;
+    previous_level = this.detailLevel;
     if (zoom < 10) {
-      detailLevel = 1;
+      this.detailLevel = 1;
     } else {
-      detailLevel = 0;
+      this.detailLevel = 0;
     }
-    if (detailLevel != previous_level) {
-      cullAllMarkers();
-      if (detailLevel == 1) {
+    if (this.detailLevel != previous_level) {
+      this.cullAllMarkers();
+      if (this.detailLevel == 1) {
         $('.header_search_ui').addClass('less_details');
       } else {
         $('.header_search_ui').removeClass('less_details');        
       }
     }
-    getMarkersForBounds();
+    this.getMarkersForBounds();
   }
 
-  function getMarkersForBounds(force) {
-    cullMarkersByBounds()
+  this.getMarkersForBounds = function(force) {
+    this.cullMarkersByBounds()
     var current_time = new Date().getTime();
-    if (current_time - this.previousQueryTime < 500 && !force) return;
+    if (this.current_time - this.previousQueryTime < 500 && !force) return;
     this.previousQueryTime = current_time;
     var bounds = this.map.getBounds();
     queryPack = [bounds.getSouthWest().lat(), bounds.getSouthWest().lng(), 
                  bounds.getNorthEast().lat(), bounds.getNorthEast().lng(),
-                 detailLevel].join('/');
+                 this.detailLevel].join('/');
+    var self = this
     $.getJSON('/get_markers/' + queryPack, function(data, textStatus) {
-      $(data).each(function(i, item) {
-        if (markerHash[item.id] == undefined) {
-          var size = Math.ceil((item.body / 25)+11);
-          if (detailLevel != 0) {
-            size = (size / 25) + 10;
-          }
-          var latlng = new google.maps.LatLng(item.lat, item.lon);
-          var icon_url = ButtonFactory.create(item.avg, size);
-          var image = new google.maps.MarkerImage(icon_url, 
-            new google.maps.Size(size, size),
-            new google.maps.Point(0, 0),
-            new google.maps.Point(size/2, size/2)
-          );
-          var marker = new google.maps.Marker({
-                ident: item.id,
-                position: latlng,
-                title: item.name,
-                icon: image
-            });
-          addMarker(marker);
-          google.maps.event.addListener(marker, 'click', function() {
-            markerClicked(map,marker);
-          });
-        }
-      }); 
-    updateViewStats();
+      self.updateMarkers(data)
     });
-  };
-  return { 
   }
 
-  function markerClicked(map, marker) {
+  this.updateMarkers = function(data) {
+    var self = this
+    $(data).each(function(i, item) {
+      if (self.markerHash[item.id] == undefined) {
+        var size = Math.ceil((item.body / 25)+11);
+        if (self.detailLevel != 0) {
+          size = (size / 25) + 10;
+        }
+        var latlng = new google.maps.LatLng(item.lat, item.lon);
+        var icon_url = ButtonFactory.create(item.avg, size);
+        var image = new google.maps.MarkerImage(icon_url, 
+          new google.maps.Size(size, size),
+          new google.maps.Point(0, 0),
+          new google.maps.Point(size/2, size/2)
+        );
+        var marker = new google.maps.Marker({
+              ident: item.id,
+              position: latlng,
+              title: item.name,
+              icon: image
+          });
+        self.addMarker(marker);
+        google.maps.event.addListener(marker, 'click', function() {
+          self.markerClicked(map,marker);
+        });
+      }
+    }); 
+    this.updateViewStats();
+  };
+
+  this.markerClicked = function(map, marker) {
     var boxText = document.createElement("div");
     // We should probably insert this into the the DOM through sass and read it from there
     boxText.style.cssText = "border: 1px solid black;margin-top: 8px; background: black; padding: 5px; border-radius:3px; -moz-border-radius:3px; webkit-border-radius:3px; -moz-box-shadow #000 5px 5px 10px; -webkit-box-shadow #000 5px 5px 10px; box-shadow #000 5px 5px 10px;";
@@ -220,18 +226,17 @@ function MarkerKeeper() {
       })
     });
 
-    closeAnyInfoboxes();
+    this.closeAnyInfoboxes();
     infoBoxOptions.content = boxText;
-    currentInfoBox = new InfoBox(infoBoxOptions);                
+    var currentInfoBox = new InfoBox(infoBoxOptions);                
     currentInfoBox.open(map, marker);
   }
 
-  function humanizeTestCode(test_code) {
+  var humanizeTestCode = function(test_code) {
     if (test_code.match('REG')) { return "regning" };
     if (test_code.match('LES')) { return "lesning" };
     if (test_code.match('ENG')) { return "engelsk" };
   }
-
 };
 
 var ButtonFactory = (function() {
