@@ -37,6 +37,31 @@ class Massage < Thor
     end
   end
 
+  desc "calculate_averages", "Run the stats for schools, munis and counties"
+  def calculate_averages
+    require './environment'
+    puts "Calculating school avgs"
+    School.all.each do |s|
+     normalized = s.test_results.map { |result| result.normalized_result }.compact
+     s.result_average = (normalized.inject { |a, b| a + b }) / normalized.length unless normalized.empty?
+     puts s.result_average
+     s.save!
+    end
+    puts "Muni school avgs"
+    Municipality.all.each do |muni|
+      avgs = School.find(:all, :conditions => {:municipality => muni.name}).map(&:result_average).compact
+      muni.result_average = (avgs.inject { |a, b| a + b }) / avgs.length unless avgs.empty?
+      body_count = School.find(:all, :conditions => {:municipality => muni.name}).map(&:student_body_count).compact
+      muni.student_body_count = (body_count.inject { |a, b| a + b }) unless body_count.empty?
+      muni.save!
+    end
+    puts "Calculating county avgs"
+    County.all.each do |county|
+      avgs = School.find(:all, :conditions => {:county => county.name}).map(&:result_average).compact
+      county.result_average = (avgs.inject { |a, b| a + b }) / avgs.length unless avgs.empty?
+      county.save!
+    end
+  end
 
   desc "get_student_body_count", "How many students abound? ** Warning ≈10% error rate"
   def get_student_body_count
@@ -95,7 +120,6 @@ class Massage < Thor
     require 'nokogiri'
     require 'CGI'
     require 'open-uri'
-
     require 'geokit'
     Geokit::Geocoders::google = ENV['GOOGLE_GEOCODING_KEY']
     schools = School.find(:all, :conditions => {:location => nil}).asc(:name)

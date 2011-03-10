@@ -13,11 +13,11 @@ set :root, File.dirname(__FILE__) # <- do we need this? // check to see if templ
 set :haml, :format => :html5
 
 configure :development do
-  Mongoid.configure do |config|
-    name = "skoolgate_development"
-    host = "localhost"
-    config.master = Mongo::Connection.new.db(name, :logger => Logger.new(STDOUT))
-    config.slaves = [
+    Mongoid.configure do |config|
+      name = "skoolgate_development"
+      host = "localhost"
+      config.master = Mongo::Connection.new.db(name, :logger => './log/mongo.log')
+      config.slaves = [
       Mongo::Connection.new(host, 27017, :slave_ok => true).db(name)
     ]
     config.persist_in_safe_mode = false

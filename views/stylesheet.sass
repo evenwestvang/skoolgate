@@ -11,6 +11,7 @@ $header: rgba(10,10,10,0.9)
 $black: #333
 $lite: #999
 $very_lite: #666
+$very_very_lite: #222
 $white: #fff
 $white_lite: darken($white, 15%) 
 
@@ -162,30 +163,47 @@ footer
   h2
     :margin 0px 0px 3px 0px
 
+  .street_view_button
+    :float right
+
   .address
     :color $lite
 
+  .student_body_count
+    :float right
+    :margin-right 10px
+    :color $lite
+
+  .year_box
+    :background-color #111
+    :padding 5px
+    :margin-bottom 10px
+  
   ul#test_list
     :list-style-type none
     :display inline-block
     :margin 8px 10px 0px 0px
-    :width 130px
+    :width 100px
     :background-color #0a0a0a
-    :border 2px dotted #000
-    :padding 5px 10px 5px 10px
+    :border 2px dotted #222
+    :padding 5px 10px 0px 10px
     li
+      :font-size 8pt
       :display block
       .result_box_outer
         :background-color #222
         :margin 2px 0px 6px 0px
       .result_box
-        :height 15px
+        :height 5px
         :background-color #1af
         @include shadows(#000, 2px, 0px, 6px)
+      .test_name
+        :color $very_lite
+        :font-weight normal
       .result
         :float right
-        :color $very_lite
+        :color $very_very_lite
     li.year
-      :font-size 14px
-      :font-weight bold
+      :font-size 12px
+      :font-weight normal
       :margin-bottom 6px

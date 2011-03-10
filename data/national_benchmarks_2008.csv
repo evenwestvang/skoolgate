@@ -666,7 +666,7 @@ Vestfold;Larvik;Ra Ungdomskole;NPREG08;2,9;6,3;26,1;47,7;12,6;7,2
 Vestfold;Sandefjord;Breidablikk ungdomsskole;NPREG08;2,9;6,9;20,8;50,9;13,8;7,5
 Vestfold;Tønsberg;Kongseik ungdomsskole;NPREG08;2,9;5,7;28,7;42,5;14,9;8,0
 Vest-Agder;Kvinesdal;Kvinesdal ungdomsskole;NPREG08;2,9;6,2;32,3;35,4;21,5;4,6
-Vest-Agder;Sogndalen;Oasen skole AS;NPREG08;2,9;0,0;0,0;0,0;0,0;0,0
+Vest-Agder;Songdalen;Oasen skole AS;NPREG08;2,9;0,0;0,0;0,0;0,0;0,0
 Troms;Balsfjord;Nordkjosbotn skole;NPREG08;2,9;0,0;0,0;0,0;0,0;0,0
 Troms;Ibestad;Ibestad ungdomsskole;NPREG08;2,9;0,0;0,0;0,0;0,0;0,0
 Troms;Lavangen;Lavangen skole;NPREG08;2,9;0,0;0,0;0,0;0,0;0,0
@@ -1548,7 +1548,7 @@ Vest-Agder;Kristiansand;Hellemyr skole;NPREG05;2,1;22,6;48,4;29,0;0,0;0,0
 Vest-Agder;Kristiansand;Lovisenlund skole;NPREG05;2,1;20,4;51,0;28,6;0,0;0,0
 Vest-Agder;Kristiansand;Presteheia skole;NPREG05;2,1;21,4;45,2;33,3;0,0;0,0
 Vest-Agder;Kristiansand;Slettheia skole;NPREG05;2,1;20,5;50,0;29,5;0,0;0,0
-Vest-Agder;Sogndalen;Oasen skole AS;NPREG05;2,1;0,0;0,0;0,0;0,0;0,0
+Vest-Agder;Songdalen;Oasen skole AS;NPREG05;2,1;0,0;0,0;0,0;0,0;0,0
 Vest-Agder;Søgne;Lunde skole;NPREG05;2,1;16,0;54,0;30,0;0,0;0,0
 Troms;Lavangen;Lavangen skole;NPREG05;2,1;0,0;0,0;0,0;0,0;0,0
 Troms;Lyngen;Eidebakken skole;NPREG05;2,1;0,0;0,0;0,0;0,0;0,0
@@ -4185,7 +4185,7 @@ Vestfold;Stokke;Vear skole;NPLES08;2,9;9,1;30,9;29,1;18,2;12,7
 Vest-Agder;Kristiansand;Grim skole;NPLES08;2,9;14,7;16,7;40,4;19,2;9,0
 Vest-Agder;Kristiansand;Havlimyra skole;NPLES08;2,9;12,7;18,2;47,3;12,7;9,1
 Vest-Agder;Lindesnes;Lindesnes ungdomsskole;NPLES08;2,9;10,6;21,2;40,9;18,2;9,1
-Vest-Agder;Sogndalen;Oasen skole AS;NPLES08;2,9;0,0;0,0;0,0;0,0;0,0
+Vest-Agder;Songdalen;Oasen skole AS;NPLES08;2,9;0,0;0,0;0,0;0,0;0,0
 Vest-Agder;Sogndalen;Songdalen ungdomsskole;NPLES08;2,9;11,9;25,4;35,8;19,4;7,5
 Vest-Agder;Søgne;Tinntjønn skole;NPLES08;2,9;9,7;27,4;35,5;19,4;8,1
 Troms;Gratangen;Gratangsbotn skole;NPLES08;2,9;0,0;0,0;0,0;0,0;0,0
@@ -4854,7 +4854,7 @@ Vestfold;Sandefjord;Helgerød skole;NPLES05;2,3;0,0;0,0;0,0;0,0;0,0
 Vestfold;Svelvik;Berger skole;NPLES05;2,3;0,0;0,0;0,0;0,0;0,0
 Vestfold;Tjøme;Lindhøy skole;NPLES05;2,3;14,3;45,2;40,5;0,0;0,0
 Vest-Agder;Farsund;Vanse skole;NPLES05;2,3;2,6;61,5;35,9;0,0;0,0
-Vest-Agder;Sogndalen;Oasen skole AS;NPLES05;2,3;0,0;0,0;0,0;0,0;0,0
+Vest-Agder;Songdalen;Oasen skole AS;NPLES05;2,3;0,0;0,0;0,0;0,0;0,0
 Vest-Agder;Åseral;Kyrkjebygd skule;NPLES05;2,3;0,0;0,0;0,0;0,0;0,0
 Troms;Lenvik;Silsand barneskole;NPLES05;2,3;11,4;45,5;43,2;0,0;0,0
 Troms;Lyngen;Eidebakken skole;NPLES05;2,3;0,0;0,0;0,0;0,0;0,0
@@ -7668,7 +7668,7 @@ Vest-Agder;Lindesnes;Lindesnes ungdomsskole;NPENG08;2,8;16,4;20,9;37,3;20,9;4,5
 Vest-Agder;Lyngdal;Berge ungdomsskole;NPENG08;2,8;9,1;31,8;40,9;11,4;6,8
 Vest-Agder;Mandal;Blomdalen ungdomsskole;NPENG08;2,8;10,7;25,0;42,0;15,2;7,1
 Vest-Agder;Mandal;Vassmyra ungdomsskole;NPENG08;2,8;4,3;34,8;42,0;18,8;0,0
-Vest-Agder;Sogndalen;Oasen skole AS;NPENG08;2,8;0,0;0,0;0,0;0,0;0,0
+Vest-Agder;Songdalen;Oasen skole AS;NPENG08;2,8;0,0;0,0;0,0;0,0;0,0
 Vest-Agder;Søgne;Tangvall skole;NPENG08;2,8;14,6;18,8;47,9;14,6;4,2
 Vest-Agder;Åseral;Kyrkjebygd skule;NPENG08;2,8;0,0;0,0;0,0;0,0;0,0
 Troms;Kåfjord;Olderdalen skole;NPENG08;2,8;0,0;0,0;0,0;0,0;0,0
@@ -8656,7 +8656,7 @@ Vestfold;Tønsberg;Træleborg skole;NPENG05;2,1;20,0;53,3;26,7;0,0;0,0
 Vest-Agder;Farsund;Farsund barne- og ungdomsskole;NPENG05;2,1;20,3;47,8;31,9;0,0;0,0
 Vest-Agder;Kristiansand;Vardåsen skole;NPENG05;2,1;13,2;60,5;26,3;0,0;0,0
 Vest-Agder;Lindesnes;Nyplass skole;NPENG05;2,1;19,4;55,6;25,0;0,0;0,0
-Vest-Agder;Sogndalen;Oasen skole AS;NPENG05;2,1;0,0;0,0;0,0;0,0;0,0
+Vest-Agder;Songdalen;Oasen skole AS;NPENG05;2,1;0,0;0,0;0,0;0,0;0,0
 Vest-Agder;Vennesla;Samkom skole;NPENG05;2,1;0,0;0,0;0,0;0,0;0,0
 Vest-Agder;Vennesla;Vennesla skole;NPENG05;2,1;14,8;59,3;25,9;0,0;0,0
 Utland;Utland;SPAIN - DNS - Ciudad Quesada - Rojales;NPENG05;2,1;0,0;0,0;0,0;0,0;0,0
@@ -8918,7 +8918,7 @@ Sør-Trøndelag;Trondheim;Solbakken skole;NPENG05;2,0;0,0;0,0;0,0;0,0;0,0
 Sør-Trøndelag;Trondheim;Stavset skole;NPENG05;2,0;23,4;51,1;25,5;0,0;0,0
 Sør-Trøndelag;Trondheim;Åsveien skole;NPENG05;2,0;22,9;53,0;24,1;0,0;0,0
 Sør-Trøndelag;Åfjord;Åset skole;NPENG05;2,0;32,3;35,5;32,3;0,0;0,0
-Svalbard;Svalbard;Longyearbyen skole - Grunnskole og videregående S;NPENG05;2,0;0,0;0,0;0,0;0,0;0,0
+Svalbard;Spitsbergen;Longyearbyen skole - Grunnskole og videregående S;NPENG05;2,0;0,0;0,0;0,0;0,0;0,0
 Sogn og Fjordane;Bremanger;Hauge skule;NPENG05;2,0;0,0;0,0;0,0;0,0;0,0
 Sogn og Fjordane;Gulen;Eivindvik skule;NPENG05;2,0;0,0;0,0;0,0;0,0;0,0
 Sogn og Fjordane;Jølster;Skei skule;NPENG05;2,0;0,0;0,0;0,0;0,0;0,0

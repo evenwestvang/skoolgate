@@ -1,165 +1,318 @@
+# encoding: UTF-8
+
 class Io < Thor
 
-  # Don't read this code.
-
-  SCHOOL_CSV_FIELDS = [:name, :municipality, :county, :address, :student_body_count, :lat, :lon]
-
-  desc "dump_schools_to_csv FILENAME", "Dump to file"
-  def dump_schools_to_csv(filename = "./data/geocoded_schools_2008.csv")
+  desc "import_all", "import all schools, afresh"
+  def import_all
     require './environment'
-    require 'CSV'
-    CSV.open(File.expand_path(filename), "wb") do |csv|
-      csv << SCHOOL_CSV_FIELDS.map { |t| t.to_s }
-      School.find(:all).asc(:location).each do |s|
-        lat, lon = nil
-        if s.location
-          lat = s.location[0]
-          lon = s.location[1]
-        end
-        csv << [s.name,s.municipality, s.county, 
-                s.address, s.student_body_count, lat, lon]
-      end
+    # import_data('data/national_benchmarks_2008.csv', 2008, :fresh => true)
+    # import_data('data/national_benchmarks_2009.csv', 2009)
+    # import_data('data/national_benchmarks_2010.csv', 2010)
+    # import_school_addresses
+    # geocode_schools
+    # geocode_munis
+    canonical_school_names
+    # calculate_averages
+  end
+
+  ADDRESS_STUDENT_BODY_COUNT_FIELDS = [:county, :municipality, :school_name, :address, :postal_code, :postal_place, :student_body_count]
+
+  desc "canonical_school_names", "Apply names to schools"
+  def canonical_school_names
+    School.all.each do |school|
+      school.name = school.annual_results.last.school_name
+      school.save!
     end
   end
 
-  desc "import_schools_from_csv FILENAME", "Nuke school collection and import school data from CSV"
-  def import_schools_from_csv(filename = "data/geocoded_schools_2008.csv")
-    # Hinna skole	Stavanger	Rogaland	Ordfører Tveteraas Gate 11, 4020 STAVANGER	58.9164337	5.7217672
-    require './environment'
-    require 'CSV'
-    puts "\n- Deleting schools…"
-    School.delete_all
-    puts "- School CSV --> Mongo…"
-    first = true
-    CSV.parse(File.open(filename)) do |row|
-      # Skip first row. Unpretty.
-      if first
-        first = false
-        next
-      end
-      d = Hash[*SCHOOL_CSV_FIELDS.zip(row).flatten]
-      find_or_create_counties_and_municipalities(d)
-      location = nil
-      location = [d[:lat].to_f, d[:lon].to_f] if d[:lat] and d[:lon]
-      s = School.new({
-        :name => d[:name], :county => d[:county], :municipality => d[:municipality], :student_body_count => d[:student_body_count], :address => d[:address], :location => location
-      })
-      s.save!
-      print "."
-    end
-    puts "\nImported #{School.count} schools in #{County.count} counties in #{Municipality.count} municipalities"
-    puts "Finished"
-  end
-
-  desc "import_test_data_from_csv", "Import tests from CSV"
-  def import_test_data_from_csv
-    require './environment'
-    years = [2009, 2008]
-    name_mapping = {
-      "Ekholt 1-10 skole - Avd Ungdomsveien" => "Ekholt 1-10 skole",
-      "Havnås Oppvekstsenter" => "Havnås Oppvekstsenter - Avdeling skole",
-      "Rykkinn skole - Avdeling Berger" => "Rykkinn skole",
-      "Steinerskolen i Bærum - GRS" => "Steinerskolen i Bærum",
-      "Drøbak Montessori skole AS" => "Drøbak Montessori skole"
-    }
-    allow = ["Grunnskolen Oslo Kristne Senter"]
-
-    puts "Test CSV --> Mongo…"
-    puts "- Cleaning test data off of schools"
-    School.all.each do |s| 
-      unless s.test_results.empty?
-        test_results = []
-        s.save!
-      end
-    end
-    years.each do |year|
-      puts "- Importing year #{year}"
-      count = 0
-      filename = "./data/national_benchmarks_#{year}.csv"
-      File.open(filename, 'rb').readlines.each do |line|
-        school_data, test_data = populate_test_data_columns(line, year)
-        school_data[:name] = name_mapping[school_data[:name]] if name_mapping[school_data[:name]]
-        schools = School.find(:conditions => school_data)
-        raise "Could not find school for \n #{line}" if schools.empty?
-        raise "Disambiguana – Too many schols for \n #{line}" if schools.length > 1
-        school = schools.first
-        school.test_results << TestResult.new(test_data)
-        school.save
-        count += 1
-        print "."
-      end
-      puts "Got #{count} results."
-    end
-    puts "Finished"
-  end
-
-  desc "calculate_averages", "Run the stats for schools, munis and counties"
+  desc "calculate_averages", "Run through stats. Calculate averages"
   def calculate_averages
-    require './environment'
-    puts "Calculating school avgs"
-    School.all.each do |s|
-     normalized = s.test_results.map { |result| result.normalized_result }.compact
-     s.result_average = (normalized.inject { |a, b| a + b }) / normalized.length unless normalized.empty?
-     puts s.result_average
-     s.save!
+    puts "\n\n*** Calculating school avgs"
+    School.all.each do |school|
+      school.annual_results.each do |year|
+        normalized = year.subjects.map { |subject| subject.normalized_result }.compact
+        year.result_average = (normalized.inject { |a, b| a + b }) / normalized.length unless normalized.empty?
+      end
+      normalized = school.annual_results.map { |year| year.result_average }.compact
+      school.result_average = (normalized.inject { |a, b| a + b }) / normalized.length unless normalized.empty?
+      puts school.result_average
+      school.save!
     end
     puts "Muni school avgs"
     Municipality.all.each do |muni|
-      avgs = School.find(:all, :conditions => {:municipality => muni.name}).map(&:result_average).compact
+      avgs = School.by_municipality(muni).map(&:result_average).compact
       muni.result_average = (avgs.inject { |a, b| a + b }) / avgs.length unless avgs.empty?
-      body_count = School.find(:all, :conditions => {:municipality => muni.name}).map(&:student_body_count).compact
+      body_count = School.by_municipality(muni).map(&:student_body_count).compact
       muni.student_body_count = (body_count.inject { |a, b| a + b }) unless body_count.empty?
       muni.save!
     end
     puts "Calculating county avgs"
     County.all.each do |county|
-      avgs = School.find(:all, :conditions => {:county => county.name}).map(&:result_average).compact
+      avgs = School.by_county(county).map(&:result_average).compact
       county.result_average = (avgs.inject { |a, b| a + b }) / avgs.length unless avgs.empty?
       county.save!
     end
   end
 
-  private
-
-
-  # TODO: Write a small DSL for CSV files :)
-
-  def populate_test_data_columns(line, year) 
-    # Fylke;Kommune;Skole;Prøvekode;Gjennomsnitt;% M-nivå 1;% M-nivå 2;% M-nivå 3;% M-nivå 4;% M-nivå 5
-    row = line.chomp.split(";")
-    school = { :name => row[2],  :county => row[0], :municipality => row[1] }
-    school[:municipality].gsub!('(ny)', '')     # robots don't like humans
-    test = { :test_code => row[3] }
-    test[:result] = row[4].gsub(',','.').to_f
-    test[:result] = nil if test[:result] == 0
-    test[:year] = year
-    test[:school_year] = test[:test_code].match(/0(\d)/)[1].to_i
-
-    if test[:result]
-      if test[:school_year] == 5
-        test[:normalized_result] = (test[:result] - 1) / 2  # 1-3
-      elsif test[:school_year] == 8
-        test[:normalized_result] = (test[:result] - 1) / 4  # 1-5
+  desc "geocode_munis", "Geocode municipalities"
+  def geocode_munis
+    puts "\n\n*** Geocoding municipalities\n"
+    require 'open-uri'
+    require 'geokit'
+    munis = Municipality.where(:location.exists => false).all
+    munis.each do |muni|
+      puts "Coding #{muni.name}"
+      bounds = Geokit::Geocoders::GoogleGeocoder.geocode(muni.name, :bias => 'no').suggested_bounds
+      res = Geokit::Geocoders::GoogleGeocoder.geocode("#{muni.name}", :bias => bounds)
+      if res
+        muni.location = [res.lat, res.lng]
+        muni.save!
       else
-        raise "Not a valid year"
+        puts "\n *** Couldn't code municipality #{muni.name} \n\n"
       end
     end
-
-    return school, test
   end
 
+  desc "geocode_schools", "Geocode schools"
+  def geocode_schools
+    puts "\n\n*** Geocoding \n"
+    require 'open-uri'
+    require 'geokit'
 
-  no_tasks do
-    def find_or_create_counties_and_municipalities(d)
-      county = County.find_or_create_by(:name => d[:county])
-      unless municipality = Municipality.first(:conditions => {:name => d[:municipality], :in_county => d[:county]})
-        municipality = Municipality.new(:name => d[:municipality])
-        municipality.in_county = d[:county]
-        municipality.save!
-        puts "\nMunicipality #{municipality.name} in #{municipality.in_county} created"
+    uncoded = 0
+
+    schools = School.where(:address.exists => true).where(:location.exists => false)
+    count = schools.count
+
+    schools.each_with_index do |school, index|
+      puts "Coding #{school.address} – #{index}/#{count}"
+      bounds = Geokit::Geocoders::GoogleGeocoder.geocode(school.municipality.name, :bias => 'no').suggested_bounds
+      res = Geokit::Geocoders::GoogleGeocoder.geocode("#{school.address}", :bias => bounds)
+      if res.success?
+        school.location = [res.lat, res.lng]
+        school.save!
+        uncoded += 1
+      else
+        puts "\n *** Couldn't code address #{school.address} \n\n"
+      end
+    end
+    puts "\n\n Uncoded schools – #{uncoded}"
+  end
+
+  desc "import_school_addresses", "Import addresses"
+  def import_school_addresses
+    # require './environment'
+    puts "\n\n*** Applying addresses\n"
+    require 'CSV'
+
+    rows = []
+    CSV.parse(File.read("data/gsi_adresser_og_elevtall_2010.csv"), :col_sep => ";").each do |row|
+      keys = Hash[*ADDRESS_STUDENT_BODY_COUNT_FIELDS.zip(row).flatten]
+      rows << keys if keys[:student_body_count] != "0"
+    end
+
+    schools = School.all
+    puts "\n\nMatching addresses for #{schools.length} schools…\n"
+
+    rows.each do |keys|
+      keys[:municipality] = sanitize_municipality_name(keys[:municipality])
+      keys[:county] = "Svalbard" if keys[:municipality] == "Svalbard"
+
+      county = County.where(:name => /#{keys[:county].strip}/i).first
+      raise "#{keys[:county]} not found" if county.nil?
+      
+      municipality = Municipality.where(:name => /#{keys[:municipality].strip}/i, :county_id => county.id).first
+      raise "#{keys[:municipality]} in #{keys[:county]} not found" if municipality.nil?
+
+      school = School.by_municipality(municipality).by_county(county).school_name(keys[:school_name]).first
+      school ||= School.by_municipality(municipality).by_county(county).school_name(scrub_name_variants(keys[:school_name])).first
+ 
+      if school
+        schools -= [school]
+        print "."
+        address = ""
+        address << "#{keys[:address]}, " if keys[:address]
+        address << "#{keys[:postal_code]} #{keys[:postal_place]}".strip
+        school.address = address
+        school.student_body_count = keys[:student_body_count]
+        school.save!
       end
     end
 
+    puts "\n\nCouldn't find school addresses for #{schools.length} schools."
+    schools.each do |s|
+      names = s.find_school_names
+      puts "#{s.find_school_names} in #{s.municipality.name} in #{s.county.name} county"
+    end
+  end
+  
+
+  BENCHMARK_CSV_FIELDS = [:county, :municipality, :school_name, :test_code, :result]
+
+  desc "nuke_collections", "Just what it says"
+  def nuke_collections
+    puts "\n- Deleting everything…"
+    County.delete_all
+    Municipality.delete_all
+    School.delete_all
+  end
+
+  # Sør-Trøndelag;Trondheim;Birralee International School Trondheim AS;NPREG08;4,3;0,0;0,0;0,0;0,0;0,0
+  desc "import_data FILENAME OPTIONS", "Import school data from CSV"
+  def import_data(filename, year, options = {})
+    require 'CSV'
+    require 'amatch'
+    
+    nuke_collections if options[:fresh]
+    puts "- Reading #{filename} for #{year} --> MongoDB…"
+    rows = []
+    CSV.parse(File.read(filename), :col_sep => ";").each do |row|
+      keys = Hash[*BENCHMARK_CSV_FIELDS.zip(row).flatten]
+      rows << keys if keys[:school_name] and not keys[:school_name].empty?
+    end
+
+    unmatched = []
+
+    rows.each do |keys|
+
+      keys[:municipality] = sanitize_municipality_name(keys[:municipality])
+
+      # Ensure county and municipality if we're running fresh. Regexp since they keep changing casing
+      county = County.where(:name => /#{keys[:county]}/i).first
+      county ||= County.create(:name => keys[:county]) if options[:fresh]
+      municipality = Municipality.where(:name => /#{keys[:municipality]}/i, :county_id => county.id).first
+
+      # INCONSISTENCY WORKAROUND: Ok, so yeah, there were no test results for this muni in 2008
+      if options[:fresh] or keys[:municipality] == "Vindafjord"
+        municipality ||= Municipality.create(:name => keys[:municipality], :county => county)
+      end
+
+      # Should never happen, but you ne'er know
+      raise "County not found #{keys[:county]}" if county.nil?
+      raise "Municipality not found #{keys[:municipality]}" if municipality.nil?
+
+      # Attempt a trivial match
+      school = School.by_municipality(municipality).by_county(county).school_name(keys[:school_name]).first
+      school ||= School.new({:county => county, :municipality => municipality}) if options[:fresh]
+
+      unless school.nil?
+        school.add_annual_result(year, keys[:school_name], Subject.new(clean_test_data(keys))) and print " "
+      else
+        unmatched << keys and print "!"
+      end
+    end
+
+    puts "\n\n- Attempting to match #{unmatched.length} results for #{year}\n\n"
+
+    unmatched.each do |keys|
+      school = nil
+      name = keys[:school_name]
+      puts "\nAttempting to match #{name}"
+
+      county = County.where(:name => /#{keys[:county]}/i).first
+      municipality = Municipality.where(:name => /#{keys[:municipality]}/i, :county_id => county.id).first
+      schools = School.by_municipality(municipality).by_county(county).school_name(keys[:school_name])
+
+      school = schools.first
+
+      puts "!!! Looks like it's been created in the interrim - great" if school
+      
+      if school.nil?
+        match_schools = School.by_county(county).by_municipality(municipality).not_in_year(2009)
+        if match_schools.empty?
+          # puts "! No available schools available in municipality to match with. Must be new."
+          school = School.new({:county => county, :municipality => municipality})
+        else
+          match_schools.each do |match_school|
+            match_school.annual_results.map(&:school_name).each do |match_name|
+              if match_name.match(/#{Regexp.escape(name)}/i) || name.match(/#{Regexp.escape(match_name)}/i)
+                school = match_school
+                puts "# #{name} matches #{match_name} on substrings"
+              end
+            end
+          end
+          scrubbed_name = scrub_name_variants(name)
+          if school.nil? and scrubbed_name.length > 4
+            scored_schools = match_schools.map do |school|
+              match_names = school.annual_results.map(&:school_name).map { |name| scrub_name_variants(name) }
+              score = scrubbed_name.levenshtein_similar(match_names).sort.reverse[0]
+              [score, school]
+            end
+            scored_schools.sort! {|a,b| b[0] <=> a[0]}
+            if scored_schools[0][0] > 0.6
+              school = scored_schools[0][1]
+              puts "\n + Probable match for #{name} in #{scored_schools[0][1].annual_results.map(&:school_name).inspect} with score of #{scored_schools[0][0]}"
+            else
+              puts "\n- No match for #{name} in #{scored_schools[0][1].annual_results.map(&:school_name).inspect} with score of #{scored_schools[0][0]}"
+            end
+          end
+        end
+        if school.nil?
+          puts "! New school #{name}"
+          school = School.new({:county => county, :municipality => municipality})
+        end
+      end
+      puts "Adding results for #{keys[:school_name]} for year #{year} and with data #{Subject.new(clean_test_data(keys))}"
+      school.add_annual_result(year, keys[:school_name], Subject.new(clean_test_data(keys))) and print " "
+    end
+
+    puts "\nImported #{School.count} schools in #{County.count} counties in #{Municipality.count} municipalities"
+    puts "Finished"
+  end
+
+  private
+
+  no_tasks do
+
+
+  # INCONSISTENCY WORKAROUND: Names do change
+  MUNI_NAME_MAPPING = {
+    "Kåfjord" => "Gáivuotna Kåfjord",
+    "Deatnu-Tana" => "Deatnu Tana",
+    "Guovdageaidnu-Kautokeino" => "Guovdageaidnu Kautokeino",
+    "Kautokeino" => "Guovdageaidnu Kautokeino",
+    "Karasjohka-Karasjok" => "Karasjohka Karasjok",
+    "Karasjok" => "Karasjohka Karasjok",
+    "Porsanger" => "Porsanger Porsángu Porsanki",
+    "Unjárga-Nesseby" => "Unjárga Nesseby",
+    "Unjargga Nesseby" => "Unjárga Nesseby",
+    "Nesseby" => "Unjárga Nesseby",
+    "Aurskog Høland" => "Aurskog-Høland",
+    "Kvam herad" => "Kvam"
+  }
+
+  def sanitize_municipality_name name
+    # INCONSISTENCY WORKAROUND: Ok, so they put qualifiers in the municipality names in 2009
+    name = name.gsub(/\s\(.*\)/, '')
+    name = name.gsub(/(\si\s).*/, '')
+    name = MUNI_NAME_MAPPING[name] if MUNI_NAME_MAPPING[name]
+    name
+  end
+
+  def scrub_name_variants(name)
+    name.gsub(/skole|skule|Avd|\s-\s|barnehage|kombinerte|avdeling|den\snorske\sskolen|DNS|kombinert|oppvekstsenter|oppvekst|oppveksttun|nærmiljøsenter|Avd/i,'')
+  end
+
+    def clean_test_data(keys)
+      test = {}
+      keys[:result] ||= "0" # Argh, this sometimes comes back as nil for 2010. Blame excel.
+      test[:result] = keys[:result].gsub(',','.').to_f
+      test[:result] = nil if test[:result] == 0
+      test[:test_code] = keys[:test_code]
+      test[:school_year] = keys[:test_code].match(/0(\d)/)[1].to_i
+      if test[:result]
+        if test[:school_year] == 5
+          test[:normalized_result] = (test[:result] - 1) / 2  # 1-3
+        elsif test[:school_year] == 8
+          test[:normalized_result] = (test[:result] - 1) / 4  # 1-5
+        elsif test[:school_year] == 9
+          test[:normalized_result] = (test[:result] - 1) / 4  # 1-5
+        else
+          raise "Not a valid class"
+        end
+      end
+      return test
+    end
   end
 
 end

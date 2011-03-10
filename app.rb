@@ -1,7 +1,5 @@
 require './environment'
 
-require 'benchmark'
-
 KLASSES = ["School", "Municipality"]
 
 get '/marker_info/:marker_id' do
@@ -24,8 +22,8 @@ get '/get_markers/:lat/:lon/:lat2/:lon2/:detail_level' do
   end
   json = objects.map { |o| {
     :id => o.class.to_s << "_" << o.id.to_s, 
+    :name => o.name,
     :body => o.student_body_count, 
-    :name => o.name, 
     :avg => o.result_average, 
     :lat => o.location[0], 
     :lon => o.location[1]}}.to_json

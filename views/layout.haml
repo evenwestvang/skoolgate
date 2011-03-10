@@ -1,7 +1,7 @@
 !!! 5
 %html
   %head
-    %title skoleporten.bengler.no
+    %title Nasjonale prøver på kartet
     %meta{'http-equiv' => 'Content-Type', :content => 'text/html', :charset => 'utf-8'}/
     %meta{'http-equiv' => 'X-UA-Compatible', :content=>'chrome=1'}/
     %link{:href => '/stylesheet.css', :media => 'screen', :rel => 'stylesheet', :type => 'text/css'}/
@@ -30,27 +30,21 @@
         %form.search{:id => "search", :method => "post"}
           %input{:placeholder => 'skole, fylke eller kommune', :name => "place", :size => 30, :class => "text", :length => 20}
           %input{:type => "button", :value => "Søk", }
-      %header
+      %header{:style => "background-color: hsla(1,1,1,1);"}
         .header_top
           %h1 
             = link_to("NASJONALE PRØVER", "/", :class => "selected")
           %nav.year_selector
-            %ul
-              %li
-                = link_to("2008", "/", :class => "selected")
-              %li
-                = link_to("2009", "/missing_data")
-              %li
-                = link_to("2010", "/missing_data")
           %nav
             %ul
               %li
                 = link_to("hjem", "/")
               %li
+                = link_to("Skolene", "/schools")
+              %li
+                = link_to("Statistikk", "/stats")
+              %li
                 = link_to("Om denne siden", "/about")
-              -if false
-                %li
-                  = link_to("kommuner og fylker", "/counties")
         .header_search_ui
           #view_stats
             &nbsp;
