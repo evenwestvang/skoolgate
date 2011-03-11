@@ -54,7 +54,6 @@ function initMaps() {
 
   google.maps.event.addListener(this.map, "zoom_changed", function() {
     markerKeeper.closeAnyInfoboxes();
-    markerKeeper.zoomChanged();
   });
 
 }
@@ -109,38 +108,14 @@ function MarkerKeeper(map) {
 
   this.updateViewStats = function() {
     disp_list = new Array
-    if (this.detailLevel == 0) {
+    if (this.detailLevel == "schools") {
       if (this.showPrimaries) disp_list.push("barneskoler");
       if (this.showSecondaries) disp_list.push("ungdomsskoler");
     } else {
-      disp_list.push("kommuner");
+      disp_list.push("kommuner. Zoom inn for skoler.");
     }
     s = "Viser " + this.markers.length + " " + disp_list.join(' og ')
     $('#view_stats').text(s);
-  }
-
-  this.zoomChanged = function() {
-    zoom = map.getZoom();
-    console.info("** Zoom level changed?")
-    console.info(zoom + " : " + this.detailLevel);
-    var zoom_change = false;
-    if (zoom < 10 && this.detailLevel == 0) {
-      console.info("!!! Zoom level changed!!!")
-      this.detailLevel = 1;
-      zoom_change = true;
-    } else if (zoom >= 10 && this.detailLevel == 1) {
-      this.detailLevel = 0;
-      zoom_change = true;
-    }
-    if (zoom_change) {
-      this.cullAllMarkers();
-      if (this.detailLevel == 1) {
-        $('.header_search_ui').addClass('less_details');
-      } else {
-        $('.header_search_ui').removeClass('less_details');        
-      }
-      this.getMarkersForBounds();
-    }
   }
 
   this.getMarkersForBounds = function(force) {
@@ -150,21 +125,61 @@ function MarkerKeeper(map) {
     this.previousQueryTime = current_time;
     var bounds = this.map.getBounds();
     queryPack = [bounds.getSouthWest().lat(), bounds.getSouthWest().lng(), 
-                 bounds.getNorthEast().lat(), bounds.getNorthEast().lng(),
-                 this.detailLevel].join('/');
+                 bounds.getNorthEast().lat(), bounds.getNorthEast().lng()].join('/');
     var self = this
     $.getJSON('/get_markers/' + queryPack, function(data, textStatus) {
       self.updateMarkers(data)
     });
   }
 
+  // this.zoomChanged = function() {
+  //   zoom = map.getZoom();
+  //   console.info("** Zoom level changed?")
+  //   console.info(zoom + " : " + this.detailLevel);
+  //   var zoom_change = false;
+  //   if (zoom < 10 && this.detailLevel == 0) {
+  //     console.info("!!! Zoom level changed!!!")
+  //     this.detailLevel = 1;
+  //     zoom_change = true;
+  //   } else if (zoom >= 10 && this.detailLevel == 1) {
+  //     this.detailLevel = 0;
+  //     zoom_change = true;
+  //   }
+  //   if (zoom_change) {
+  //     this.cullAllMarkers();
+  //     if (this.detailLevel == 1) {
+  //       $('.header_search_ui').addClass('less_details');
+  //     } else {
+  //       $('.header_search_ui').removeClass('less_details');        
+  //     }
+  //     this.getMarkersForBounds();
+  //   }
+  // }
+
   this.updateMarkers = function(data) {
     var self = this
-    $(data).each(function(i, item) {
+    
+    newDetailLevel = data.detailLevel;
+    if (self.detailLevel != newDetailLevel) {
+      this.cullAllMarkers();
+      if (newDetailLevel == "schools") {
+        $('.header_search_ui').removeClass('less_details');
+      } else {
+        $('.header_search_ui').addClass('less_details');
+      }
+      self.detailLevel = newDetailLevel;
+    }
+    
+    $(data.objects).each(function(i, item) {
       if (self.markerHash[item.id] == undefined) {
-        var size = Math.ceil(Math.sqrt(item.body)*1.3);
-        if (self.detailLevel != 0) {
+        var size = Math.ceil(Math.sqrt(item.body));
+        console.info(typeof self.detailLevel);
+        console.info(self.detailLevel);
+        console.info(self.detailLevel == "schools");
+
+        if (self.detailLevel != "schools") {
           size = (size / 15) + 10;
+          console.info("bork");
         }
         var latlng = new google.maps.LatLng(item.lat, item.lon);
         var icon_url = ButtonFactory.create(item.avg, size);
@@ -249,36 +264,25 @@ function MarkerKeeper(map) {
                 var panoPosLat = panoPos.lat() / 180 * Math.PI;
                 var panoPosLng = panoPos.lng() / 180 * Math.PI;
 
-                var y = Math.sin(markerPosLng - panoPosLng) *
-    Math.cos(markerPosLat);
-                var x = Math.cos(panoPosLat) * Math.sin(markerPosLat) -
-    Math.sin(panoPosLat)*Math.cos(markerPosLat) * Math.cos(markerPosLng -
-    panoPosLng);
+                var y = Math.sin(markerPosLng - panoPosLng) * Math.cos(markerPosLat);
+                var x = Math.cos(panoPosLat) * Math.sin(markerPosLat) - 
+                  Math.sin(panoPosLat)*Math.cos(markerPosLat) * Math.cos(markerPosLng - panoPosLng);
                 var brng = Math.atan2(y,x) / Math.PI * 180;
                 var pov = panorama.getPov();
                 pov.heading = brng;
                 panorama.setPov(pov);
               }
             }
-
-            google.maps.event.addListener(marker, 'position_changed',
-    refreshPanoPov);
-            google.maps.event.addListener(panorama, 'position_changed',
-    refreshPanoPov);
-             
-
-
+            google.maps.event.addListener(marker, 'position_changed',refreshPanoPov);
+            google.maps.event.addListener(panorama, 'position_changed',refreshPanoPov);
           });
         }
       }
     });
-
     this.closeAnyInfoboxes();
     infoBoxOptions.content = boxContent;
     this.currentInfoBox = new InfoBox(infoBoxOptions);                
     this.currentInfoBox.open(map, marker);
-              console.info($('street_view_button'));
-
   }
 
   var treatData = function(result) {

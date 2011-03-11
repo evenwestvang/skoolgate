@@ -1,5 +1,7 @@
 require './environment'
 
+require 'benchmark'
+
 KLASSES = ["School", "Municipality"]
 
 get '/marker_info/:marker_id' do
@@ -11,22 +13,27 @@ get '/marker_info/:marker_id' do
   end
 end
 
-get '/get_markers/:lat/:lon/:lat2/:lon2/:detail_level' do
+get '/get_markers/:lat/:lon/:lat2/:lon2' do
   content_type 'text/json', :charset => 'utf-8'
   box = [[params[:lat].to_f, params[:lon].to_f], [params[:lat2].to_f, params[:lon2].to_f]]
   objects = nil
-  if params[:detail_level] == "0"
+
+  result = {}
+  if School.where(:location.within => {"$box" => box}).limit(401).count < 400
+    result[:detailLevel] = "schools"
     objects = School.where(:location.within => {"$box" => box}).only(:name, :location, :result_average, :student_body_count)
   else
+    result[:detailLevel] = "municipalities"
     objects = Municipality.where(:location.within => {"$box" => box}).only(:name, :location, :result_average, :student_body_count)
   end
-  json = objects.map { |o| {
+  result[:objects] = objects.map { |o| {
     :id => o.class.to_s << "_" << o.id.to_s, 
     :name => o.name,
     :body => o.student_body_count, 
     :avg => o.result_average, 
     :lat => o.location[0], 
-    :lon => o.location[1]}}.to_json
+    :lon => o.location[1]}}
+  result.to_json
 end
 
 get '/stylesheet.css' do
@@ -36,6 +43,10 @@ end
 
 get '/' do
   haml :index
+end
+
+get '/schools' do
+  haml :schools
 end
 
 get '/about' do
