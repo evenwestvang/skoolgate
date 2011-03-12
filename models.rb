@@ -29,6 +29,9 @@ class Municipality
   field :result_average, :type => Float
   field :location, :type => Array
 
+  # Ok, we want this fast. Averages also go in schools
+  field :year_averages, :type => Hash
+
   referenced_in :county
   references_many :schools
 
@@ -50,6 +53,9 @@ class School
   field :student_body_count, :type => Integer
   field :location, :type => Array # latitude longitude
   field :result_average, :type => Float
+
+  # Ok, we want this fast. Averages also go in schools
+  field :year_averages, :type => Hash
 
   referenced_in :county
   referenced_in :municipality

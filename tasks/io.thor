@@ -11,46 +11,18 @@ class Io < Thor
     # import_school_addresses
     # geocode_schools
     # geocode_munis
-    canonical_school_names
-    # calculate_averages
+    # canonical_school_names
+    calculate_averages
   end
 
   ADDRESS_STUDENT_BODY_COUNT_FIELDS = [:county, :municipality, :school_name, :address, :postal_code, :postal_place, :student_body_count]
 
   desc "canonical_school_names", "Apply names to schools"
   def canonical_school_names
+    puts "\n\n*** Writing names into school objects"
     School.all.each do |school|
       school.name = school.annual_results.last.school_name
       school.save!
-    end
-  end
-
-  desc "calculate_averages", "Run through stats. Calculate averages"
-  def calculate_averages
-    puts "\n\n*** Calculating school avgs"
-    School.all.each do |school|
-      school.annual_results.each do |year|
-        normalized = year.subjects.map { |subject| subject.normalized_result }.compact
-        year.result_average = (normalized.inject { |a, b| a + b }) / normalized.length unless normalized.empty?
-      end
-      normalized = school.annual_results.map { |year| year.result_average }.compact
-      school.result_average = (normalized.inject { |a, b| a + b }) / normalized.length unless normalized.empty?
-      puts school.result_average
-      school.save!
-    end
-    puts "Muni school avgs"
-    Municipality.all.each do |muni|
-      avgs = School.by_municipality(muni).map(&:result_average).compact
-      muni.result_average = (avgs.inject { |a, b| a + b }) / avgs.length unless avgs.empty?
-      body_count = School.by_municipality(muni).map(&:student_body_count).compact
-      muni.student_body_count = (body_count.inject { |a, b| a + b }) unless body_count.empty?
-      muni.save!
-    end
-    puts "Calculating county avgs"
-    County.all.each do |county|
-      avgs = School.by_county(county).map(&:result_average).compact
-      county.result_average = (avgs.inject { |a, b| a + b }) / avgs.length unless avgs.empty?
-      county.save!
     end
   end
 
@@ -259,6 +231,59 @@ class Io < Thor
     puts "\nImported #{School.count} schools in #{County.count} counties in #{Municipality.count} municipalities"
     puts "Finished"
   end
+
+  desc "calculate_averages", "Run through stats. Calculate averages"
+  def calculate_averages
+    puts "\n\n*** Calculating school avgs"
+    
+    School.all.each do |school|
+      school.annual_results.each do |year|
+        normalized = year.subjects.map { |subject| subject.normalized_result }.compact
+        year.result_average = (normalized.inject { |a, b| a + b }) / normalized.length unless normalized.empty?
+      end
+      normalized = school.annual_results.map { |year| year.result_average }.compact
+      school.result_average = (normalized.inject { |a, b| a + b }) / normalized.length unless normalized.empty?
+      school.save!
+    end
+    puts "Writing yearly averages into school objects"
+    School.all.each do |school|
+      school.annual_results.each do |annual_result|
+        school.year_averages ||= {}
+        school.year_averages[annual_result.year.to_s] = annual_result.result_average
+      end
+      school.save!
+    end
+    puts "Muni school avgs"
+    Municipality.all.each do |muni|
+      schools = School.by_municipality(muni)
+      avgs = schools.map(&:result_average).compact
+      muni.result_average = (avgs.inject { |a, b| a + b }) / avgs.length unless avgs.empty?
+      body_count = schools.map(&:student_body_count).compact
+      muni.student_body_count = (body_count.inject { |a, b| a + b }) unless body_count.empty?
+      
+      year_averages = {}
+      muni.year_averages = {}
+      schools.each do |school|
+        school.annual_results.each do |annual_result|
+          year_averages[annual_result.year.to_s] ||= []
+          year_averages[annual_result.year.to_s] << annual_result.result_average
+        end
+      end
+      year_averages.each_pair do |key,value|
+        average = (value.inject { |a, b| a + b }) / value.length
+        muni.year_averages[key] = average
+      end
+      muni.save!
+    end
+
+    puts "Calculating county avgs"
+    County.all.each do |county|
+      avgs = School.by_county(county).map(&:result_average).compact
+      county.result_average = (avgs.inject { |a, b| a + b }) / avgs.length unless avgs.empty?
+      county.save!
+    end
+  end
+
 
   private
 

@@ -6,26 +6,13 @@
   
 %script{:id => "schoolTemplate", :type => "text/x-jquery-tmpl"}
   .school_infobox
-    .street_view_button{:style => "display:none;"}
-      Se på street view
+    .student_body_count
+      %span{:class => "count"} 
+        ${student_body_count}
+      elever
     .level_name ${level_name}
     %h2 ${name}
-    .address ${address} – ${student_body_count} elever
-
-%script{:id => "annualResultTemplate", :type => "text/x-jquery-tmpl"}
-  .year_box 
-    .year ${year}
-
-%script{:id => "testSetTemplate", :type => "text/x-jquery-tmpl"}
-  %ul#test_list
-    %li.year ${year}. klasse
-
-%script{:id => "testTemplate", :type => "text/x-jquery-tmpl"}
-  %li
-    .result ${result} / ${max_score}
-    .test_name ${humanizedTestCode}
-    .result_box_outer
-      .result_box{:style => "width:${percentage}%;background-color:${barColor};"}
-
-%script{:id => "schoolInfoBoxTemplateNoData", :type => "text/x-jquery-tmpl"}
-  Ingen prøver levert for dette trinnet
+    .address 
+      %span{:id => "street_view_button", :style => "display:none;"} Se bilde av skolen
+      &nbsp;
+    .chartBox

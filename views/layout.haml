@@ -13,7 +13,12 @@
     %script{:type => "text/javascript",
       :src  => "/js_libs_min.js"}
     %script{:type => "text/javascript",
+      :src  => "/highcharts.js"}
+    %script{:type => "text/javascript",
       :src  => "/app.js"}
+    %script{:type => "text/javascript",
+      :src  => "/settings.js"}
+
     :javascript
       var _gaq = _gaq || [];
       _gaq.push(['_setAccount', 'UA-129279-17']);
@@ -26,15 +31,21 @@
   %body
     #container
       #map_canvas
-      - if false
-        %form.search{:id => "search", :method => "post"}
-          %input{:placeholder => 'skole, fylke eller kommune', :name => "place", :size => 30, :class => "text", :length => 20}
-          %input{:type => "button", :value => "Søk", }
+      %form.search{:id => "search", :method => "post"}
+        %input{:placeholder => 'skole, fylke eller kommune', :name => "place", :size => 30, :class => "text", :length => 20}
+        %input{:type => "button", :value => "Søk", }
       %header{:style => "background-color: hsla(1,1,1,1);"}
         .header_top
-          %h1 
+          %h1
             = link_to("NASJONALE PRØVER", "/", :class => "selected")
-          %nav.year_selector
+          %nav.year_selector{:style => "display: none"}
+            %ul
+              %li#2008_link
+                = link_to("2008", "#")
+              %li#2009_link
+                = link_to("2009", "#")
+              %li#2010_link.active
+                = link_to("2010", "#")
           %nav
             %ul
               %li
@@ -44,7 +55,7 @@
               %li
                 = link_to("Statistikk", "/stats")
               %li
-                = link_to("Om denne siden", "/about")
+                = link_to("Om tjenesten", "/about")
         .header_search_ui
           #view_stats
             &nbsp;

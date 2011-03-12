@@ -1,36 +1,42 @@
 require './environment'
-
 require 'benchmark'
 
 KLASSES = ["School", "Municipality"]
+VALID_YEAR_STRINGS = (2008..2010).map(&:to_s)
 
-get '/marker_info/:marker_id' do
+get '/marker_info/:marker_id' do |marker_id|
   content_type 'text/json', :charset => 'utf-8'
-  klass, id = params[:marker_id].split('_')
+  klass, id = marker_id.split('_')
   if KLASSES.include?(klass)
     klass = klass.constantize 
     return klass.find(id).to_json
   end
 end
 
-get '/get_markers/:lat/:lon/:lat2/:lon2' do
+get '/get_markers/:lat/:lon/:lat2/:lon2/:year' do |lat, lon, lat2, lon2, year|
   content_type 'text/json', :charset => 'utf-8'
-  box = [[params[:lat].to_f, params[:lon].to_f], [params[:lat2].to_f, params[:lon2].to_f]]
-  objects = nil
+  box = [[lat.to_f, lon.to_f], [lat2.to_f, lon2.to_f]]
 
+  year = nil unless VALID_YEAR_STRINGS.include?(year)
+  year ||= "2010"
+
+  
+  objects = nil
   result = {}
+
   if School.where(:location.within => {"$box" => box}).limit(401).count < 400
     result[:detailLevel] = "schools"
-    objects = School.where(:location.within => {"$box" => box}).only(:name, :location, :result_average, :student_body_count)
+    objects = School.where(:location.within => {"$box" => box}).only(:name, :location, :result_average, :year_averages, :student_body_count)
   else
     result[:detailLevel] = "municipalities"
-    objects = Municipality.where(:location.within => {"$box" => box}).only(:name, :location, :result_average, :student_body_count)
+    objects = Municipality.where(:location.within => {"$box" => box}).only(:name, :location, :year_averages, :result_average, :student_body_count)
   end
+  
   result[:objects] = objects.map { |o| {
     :id => o.class.to_s << "_" << o.id.to_s, 
     :name => o.name,
     :body => o.student_body_count, 
-    :avg => o.result_average, 
+    :avg => o.year_averages[year], 
     :lat => o.location[0], 
     :lon => o.location[1]}}
   result.to_json
@@ -49,14 +55,13 @@ get '/schools' do
   haml :schools
 end
 
+get '/stats' do
+  haml :stats
+end
+
 get '/about' do
   haml :about
 end
-
-get '/missing_data' do
-  haml :missing_data
-end
-
 
 helpers do
   def link_to(*args)
