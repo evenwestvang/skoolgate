@@ -240,7 +240,6 @@ function MarkerKeeper(map) {
         });
       });
 
-      resultChartOptions.chart.renderTo = $(".chartBox")[0];
       resultChartOptions.series = [averageSerie];
       var sorted_keys = []
       for (key in series) {
@@ -250,6 +249,7 @@ function MarkerKeeper(map) {
       for (key in sorted_keys) {
         resultChartOptions.series.push(series[sorted_keys[key]]);
       }
+      resultChartOptions.chart.renderTo = infoBox.children().last()[0];
       chart = new Highcharts.Chart(resultChartOptions);
 
       var schoolPosition = new google.maps.LatLng(data.location[0],data.location[1]);
@@ -260,6 +260,7 @@ function MarkerKeeper(map) {
           zoom: 0
         }
       };
+      
       var sv = new google.maps.StreetViewService();
       sv.getPanoramaByLocation(schoolPosition, 100, processSVData);
       function processSVData(data, status) {
@@ -324,7 +325,7 @@ var ButtonFactory = (function() {
     var h = 1;
     var s = 100;
     var l = 45;
-    var a = 0.8;
+    var a = 0.75;
 
     this.getColor = function(val, useContrast) {
       if (!useContrast) {
