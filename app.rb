@@ -19,8 +19,6 @@ get '/get_markers/:lat/:lon/:lat2/:lon2/:year' do |lat, lon, lat2, lon2, year|
 
   year = nil unless VALID_YEAR_STRINGS.include?(year)
   year ||= "2010"
-
-  
   objects = nil
   result = {}
 
@@ -48,6 +46,7 @@ get '/stylesheet.css' do
 end
 
 get '/' do
+  @map_page = true
   haml :index
 end
 
@@ -55,8 +54,20 @@ get '/schools' do
   haml :schools
 end
 
-get '/stats' do
-  haml :stats
+get '/statistics' do
+  schools = School.all
+
+  @lon_average_json = schools.map do |s| 
+    if s.location && s.location[0] && s.location[0] > 0
+      {:name => "#{s.name} i #{s.municipality.name}", :x => s.result_average, :y => s.location[0]}
+    end
+  end.compact.to_json
+  @size_quality = schools.map do |s| 
+    if s.location && s.location[0] && s.location[0] > 0
+      {:name => "#{s.name} i #{s.municipality.name}", :x => s.result_average, :y => s.student_body_count}
+    end
+  end.compact.to_json
+  haml :statistics
 end
 
 get '/about' do

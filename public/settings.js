@@ -1,8 +1,9 @@
 
 // Config hashes
 
-chartOptions = {
+resultChartOptions = {
   chart: {
+     // defaultSeriesType: 'line',
      defaultSeriesType: 'column',
      marginRight: 160,
      marginBottom: 35,
@@ -18,10 +19,6 @@ chartOptions = {
      },
      categories: ['2008', '2009', '2010']
   },
-  credits: 
-    {
-      style: { color: "#000" }
-    },
   yAxis: {
      max: 1,
      min: 0,
@@ -37,7 +34,7 @@ chartOptions = {
   tooltip: {
      formatter: function() {
                return '<b>'+ this.series.name +'</b><br/>'+
-           this.x +': '+ this.tip ;
+           this.x +': '+ this.y.toFixed(2) ;
      }
   },
   legend: {
@@ -149,9 +146,15 @@ Highcharts.theme = {
 			color: '#FFF'
 		}
 	},
-	
-	
+  credits: 
+  {
+    style: { color: '#333;text-transform:lowercase;position:relative;top:-20px;' }
+  },
 	plotOptions: {
+    series: {
+      borderColor: '#000',
+      borderRadius: 2,            
+    },
 		line: {
 			dataLabels: {
 				color: '#CCC'
@@ -169,7 +172,7 @@ Highcharts.theme = {
 			marker: {
 				lineColor: '#333'
 			}
-		}
+		},
 	},
 	
 	toolbar: {
@@ -214,99 +217,4 @@ Highcharts.theme = {
 
 // Apply the theme
 var highchartsOptions = Highcharts.setOptions(Highcharts.theme);
-
-infoBoxOptions = {
-  disableAutoPan: false,
-  maxWidth: 0,
-  pixelOffset: new google.maps.Size(-140, 10),
-  zIndex: 0,
-  boxStyle: {
-    opacity: 1,
-    width: "100px"
-   },
-  closeBoxMargin: "10px 2px 2px 2px",
-  closeBoxURL: "http://www.google.com/intl/en_us/mapfiles/close.gif",
-  infoBoxClearance: new google.maps.Size(1, 1),
-  isHidden: false,
-  pane: "floatPane",
-  enableEventPropagation: false
-};
-
-
-mapStyle = [
-  {
-    featureType: "landscape",
-    elementType: "all",
-    stylers: [
-      { visibility: "simplified" },
-      { saturation: -98 },
-      { lightness: -58 },
-      { gamma: 0.73 }
-    ]
-  },{
-    featureType: "water",
-    elementType: "all",
-    stylers: [
-      { visibility: "on" },
-      { hue: "#0091ff" },
-      { saturation: -52 },
-      { lightness: -47 }
-    ]
-  },{
-    featureType: "road",
-    elementType: "all",
-    stylers: [
-      { visibility: "on" },
-      { lightness: -59 },
-      { gamma: 0.84 },
-      { saturation: -99 }
-    ]
-  },{
-    featureType: "road",
-    elementType: "labels",
-    stylers: [
-      { visibility: "off" },
-      { saturation: -100 }
-    ]
-  },{
-    featureType: "poi",
-    elementType: "all",
-    stylers: [
-      { visibility: "off" }
-    ]
-  },{
-    featureType: "administrative",
-    elementType: "labels",
-    stylers: [
-      { visibility: "on" },
-      { gamma: 0.5 },
-      { saturation: -24 },
-      { lightness: -51 }
-    ] 
-  },{
-    featureType: "transit",
-    elementType: "all",
-    stylers: [  
-      { visibility: "off" }
-    ]
-  } 
-];
-
-infoBoxOptions = {
-  disableAutoPan: false,
-  maxWidth: 0,
-  pixelOffset: new google.maps.Size(-140, 10),
-  zIndex: 0,
-  boxStyle: {
-    opacity: 1,
-    width: "420px"
-   },
-  closeBoxMargin: "-9px -9px 2px 2px",
-  closeBoxURL: "/close.png",
-  infoBoxClearance: new google.maps.Size(1, 1),
-  isHidden: false,
-  pane: "floatPane",
-  enableEventPropagation: false
-};
-
 

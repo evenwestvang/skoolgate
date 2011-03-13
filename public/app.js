@@ -80,6 +80,8 @@ function MarkerKeeper(map) {
   this.detailLevel = 0;
   this.activeYear = 2010;
   this.map = map;
+  this.useContrast = false;
+
 
   this.setYear = function(year, clicked) {
     $("nav.year_selector ul li").removeClass("active");
@@ -174,7 +176,7 @@ function MarkerKeeper(map) {
           size = (size / 15) + 10;
         }
         var latlng = new google.maps.LatLng(item.lat, item.lon);
-        var icon_url = ButtonFactory.create(item.avg, size);
+        var icon_url = ButtonFactory.create(item.avg, size, self.useContrast);
         var image = new google.maps.MarkerImage(icon_url, 
           new google.maps.Size(size, size),
           new google.maps.Point(0, 0),
@@ -205,19 +207,16 @@ function MarkerKeeper(map) {
 
       var averageSerie = {
         name: "Gjennomsnitt",
-        type: "column",
         data: []
       };
 
       var series = {};
 
       $(data.annual_results).each(function(i,annual_result) {
-
         averageDataPoint = {
           x: annual_result.year, 
           y: annual_result.result_average,
-          color: ButtonFactory.getColor(annual_result.result_average),
-          tip: "foo"
+          color: ButtonFactory.getColor(annual_result.result_average, self.useContrast)
         }
         averageSerie.data.push(averageDataPoint);
 
@@ -236,23 +235,22 @@ function MarkerKeeper(map) {
 
           series[ident].data.push({
             x: annual_result.year, 
-            y: result.normalized_result,
-            tip: result.result + "/" + maxScore(result)
+            y: result.normalized_result
           });
         });
       });
 
-      chartOptions.chart.renderTo = $(".chartBox")[0];
-      chartOptions.series = [averageSerie];
+      resultChartOptions.chart.renderTo = $(".chartBox")[0];
+      resultChartOptions.series = [averageSerie];
       var sorted_keys = []
       for (key in series) {
         sorted_keys.push(key);
       }
       sorted_keys = sorted_keys.sort();
       for (key in sorted_keys) {
-        chartOptions.series.push(series[sorted_keys[key]]);
+        resultChartOptions.series.push(series[sorted_keys[key]]);
       }
-      chart = new Highcharts.Chart(chartOptions);
+      chart = new Highcharts.Chart(resultChartOptions);
 
       var schoolPosition = new google.maps.LatLng(data.location[0],data.location[1]);
       var panoramaOptions = {
@@ -328,13 +326,20 @@ var ButtonFactory = (function() {
     var l = 45;
     var a = 0.8;
 
-    this.getColor = function(val) {
-      
-      return "hsla(" + this.sCurveColor(val) +"," + s + "%," + l +"%," + a +")";
+    this.getColor = function(val, useContrast) {
+      if (!useContrast) {
+        return "hsla(" + this.sCurveColor(val) +"," + s + "%," + l +"%," + a +")";
+      } else {
+        return "hsla(" + 0 +"," + 0 + "%," + this.sBrightness(val) +"%," + 1 +")";
+      }
     };
 
-    this.getColor1 = function(val) {
-      return "hsla(" + this.sCurveColor(val) +"," + s + "%," + (l*0.75) +"%," + a +")";
+    this.getColor1 = function(val, useContrast) {
+      if (!useContrast) {
+        return "hsla(" + this.sCurveColor(val) +"," + s + "%," + (l*0.75) +"%," + a +")";
+      } else {
+        return "hsla(" + 0 +"," + 0 + "%," + this.sBrightness(val)*0.25 +"%," + 1 +")";
+      }
     };
 
     this.sCurveColor = function(t) {
@@ -344,6 +349,12 @@ var ButtonFactory = (function() {
       return color_val;
     };
 
+    this.sBrightness = function(t) {
+      t = t - 0.5;
+      var log_curve = (1 / (1 + Math.pow(Math.E,-t))) - 0.5;
+      var bright_val = 43 + (log_curve) * 500;
+      return bright_val;
+    };
 
     // draws a rounded rectangle
     var drawRect = function(context, x, y, width, height, size) {
@@ -363,7 +374,7 @@ var ButtonFactory = (function() {
       context.closePath();
     };
 
-    this.createCanvas = function(t, size) {
+    this.createCanvas = function(t, size, useContrast) {
       var canvas = document.createElement("canvas");
       canvas.width = size;
       canvas.height = size;
@@ -372,8 +383,8 @@ var ButtonFactory = (function() {
       var boxStroke;
       var colorVal;
       if(t !== 0 && t !== undefined && t != null) {
-        color0 = this.getColor(t);
-        boxStroke = this.getColor1(t);
+        color0 = this.getColor(t, useContrast);
+        boxStroke = this.getColor1(t, useContrast);
       } else {
         color0 = "Silver";
         boxStroke = "rgba(100,100,100,1)";
@@ -387,9 +398,85 @@ var ButtonFactory = (function() {
       return canvas;
     };
 
-    this.create = function(label, range) {
-      var canvas = this.createCanvas(label, range);
+    this.create = function(label, range, useContrast) {
+      var canvas = this.createCanvas(label, range, useContrast);
       return canvas.toDataURL();
     };
   }();
 })();
+
+mapStyle = [
+  {
+    featureType: "landscape",
+    elementType: "all",
+    stylers: [
+      { visibility: "simplified" },
+      { saturation: -100 },
+      { lightness: -62 },
+      { gamma: 0.73 }
+    ]
+  },{
+    featureType: "water",
+    elementType: "all",
+    stylers: [
+      { visibility: "on" },
+      { hue: "#0091ff" },
+      { saturation: -72 },
+      { lightness: -57 }
+    ]
+  },{
+    featureType: "road",
+    elementType: "all",
+    stylers: [
+      { visibility: "on" },
+      { lightness: -59 },
+      { gamma: 0.84 },
+      { saturation: -99 }
+    ]
+  },{
+    featureType: "road",
+    elementType: "labels",
+    stylers: [
+      { visibility: "off" },
+      { saturation: -100 }
+    ]
+  },{
+    featureType: "poi",
+    elementType: "all",
+    stylers: [
+      { visibility: "off" }
+    ]
+  },{
+    featureType: "administrative",
+    elementType: "labels",
+    stylers: [
+      { visibility: "on" },
+      { gamma: 0.5 },
+      { saturation: -0 },
+      { lightness: -51 }
+    ] 
+  },{
+    featureType: "transit",
+    elementType: "all",
+    stylers: [  
+      { visibility: "off" }
+    ]
+  } 
+];
+
+infoBoxOptions = {
+  disableAutoPan: false,
+  maxWidth: 0,
+  pixelOffset: new google.maps.Size(-140, 10),
+  zIndex: 0,
+  boxStyle: {
+    opacity: 1,
+    width: "420px"
+   },
+  closeBoxMargin: "-9px -9px 2px 2px",
+  closeBoxURL: "/close.png",
+  infoBoxClearance: new google.maps.Size(1, 1),
+  isHidden: false,
+  pane: "floatPane",
+  enableEventPropagation: false
+};

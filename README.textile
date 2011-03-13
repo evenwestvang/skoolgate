@@ -15,20 +15,11 @@ _Description_
 * NPENG05 = engelsk for 5.-klassingene, NPENG08 = engelsk for 8.klassingene.
 
 .plan:
-  * refactor js – i have more javascript fu now. thank you shiny books.
-  * add new test data
-    - rework models
-    - rework statistics
-    - refactor display code. 'tis ugly
-    - rework display code
-  * add high quality numbers for student count & addresses
-  * run geocoding batch
-  * client must tell server which markers it has to avoid lotsa retransmission
+  
 
 TODO:
-  * aggregate results by test type and year for filtering
   * ranked static stats pages: counties / municipalities w/ map links
-  * windowed autopanning google streetview panos on #about page. mmmm. tasty.
+  * finish statistics page
   
 DONE:
   * setup Sinatra-app with MongoDB and Mongoid glue
@@ -57,6 +48,16 @@ DONE:
   * about page and colofon. write copy.
   * http cache with rack::cache and memcached
   * deploy production environment
-  * engage weaponized tweeting array
+
+v2
+  * add new test data
+    * rework models
+    * rework statistics
+    * rework display code
+  * add high quality numbers for student count & addresses
+  * run geocoding
+  * aggregate results by test type and year for filtering
+  * school have links to streetviews. Nice.
+
 
   

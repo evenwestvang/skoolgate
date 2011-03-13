@@ -1,0 +1,100 @@
+.content_page.stats_page
+  %section
+    %h2 Statistikk
+    %p
+      :plain
+        Skoleporten.bengler.no handler mest om å sette skoler på kartet. På denne siden samler årssakssammenhenger i datagrunnlaget.
+        
+  %section
+    .graph#lon_average
+    .clear
+    %p 
+      :plain
+        Skoler i storbyene, spesielt Oslo er noe bedre enn i landet ellers. Hvor langt nord eller sør skolene ligger har ellers lite å si.
+
+  %section
+    .graph#size_quality
+    %p 
+      :plain
+        Nei, faktisk ikke. De varierer mer i kvalitet. På den annen side, noen av de store skolene er imponerende gode.
+
+
+:javascript
+  var chart = new Highcharts.Chart({
+      chart: {
+          renderTo: 'lon_average',
+          defaultSeriesType: 'scatter'
+      },
+      legend: {
+        enabled: false
+      },
+      title: {
+        text: "Hvordan står det til nordpå?",
+      },
+      yAxis: {
+        max: 72,
+        min: 59,
+        title: {
+          text: 'Lengdegrad'
+        },
+      },
+      xAxis: {
+         max: 1,
+         min: 0,
+         title: {
+            text: 'Resulatat'
+         },
+         plotLines: [{
+              color: '#FF0000',
+              width: 1,
+              value: 0.5}]
+      },
+      series: [{
+        marker: {
+          radius: 1.5
+        },
+        color: 'rgba(255, 255, 255, .25)',
+        data: #{@lon_average_json}
+      }]
+  });
+
+  var chart = new Highcharts.Chart({
+      chart: {
+          renderTo: 'size_quality',
+          defaultSeriesType: 'scatter'
+      },
+      title: {
+        text: "Er små skoler bedre?",
+      },
+      legend: {
+        enabled: false
+      },
+
+      yAxis: {
+         max: 1000,
+         min: 20,
+         title: {
+            text: 'Skolestørrelse'
+         },
+      },
+      xAxis: {
+         max: 1,
+         min: 0,
+         title: {
+            text: 'Resulatat'
+         },
+         plotLines: [{
+              color: '#FF0000',
+              width: 1,
+              value: 0.5 }]
+      },
+      series: [{
+        marker: {
+          radius: 1.5
+        },
+        color: 'rgba(255, 255, 255, .25)',
+        data: #{@size_quality}
+      }]
+  });
+
+
