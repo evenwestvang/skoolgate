@@ -1,10 +1,4 @@
-#Mongoid doesn't really like making geospatial indexes so:
-#use skoolgate_****
-#db.schools.ensureIndex({location : "2d"})
-#db.municipalities.ensureIndex({location : "2d"})
-# index [[ :location, Mongo::GEO2D ]]
-
-# TODO: add thor task for indexing
+# db.municipalities.ensureIndex({location : "2d"})
 
 class County
   include Mongoid::Document
@@ -14,8 +8,12 @@ class County
   field :result_average, :type => Float
   field :location, :type => Array
 
-  references_many :municipalities
-  references_many :schools
+  references_many :municipalities, :index => true
+  references_many :schools, :index => true
+
+  index :name
+  index :link_name
+  index [[ :location, Mongo::GEO2D ]]
 
   after_create :print_tick
   def print_tick
@@ -27,14 +25,19 @@ end
 class Municipality
   include Mongoid::Document
   field :name
+  field :link_name, :type => String
+
   field :student_body_count, :type => Integer
   field :result_average, :type => Float
   field :location, :type => Array
-  field :link_name, :type => String
   field :year_averages, :type => Hash
 
+  index :name
+  index :link_name
+  index [[ :location, Mongo::GEO2D ]]
+
   referenced_in :county
-  references_many :schools
+  references_many :schools, :index => true
 
   scope :by_county, lambda { |county| { :where => { :county_id => county.id } } }
 
@@ -51,7 +54,9 @@ class School
   include Mongoid::Document
   field :address, :type => String
   field :name, :type => String
+
   field :link_name, :type => String
+
   field :student_body_count, :type => Integer
   field :location, :type => Array # latitude longitude
   field :result_average, :type => Float
@@ -63,9 +68,12 @@ class School
   # embeds
   embeds_many :annual_results
 
+  index :name
+  index :link_name
+
   scope :by_county, lambda { |county| { :where => { :county_id => county.id } } }
-  scope :by_municipality, lambda { |municipality| { :where => { :municipality_id => municipality.id } } }
-  scope :school_name, lambda { |school_name| { :where => {"annual_results.school_name" => school_name } } }
+  scope :by_municipality, lambda { |municipality| { :where => { :municipality_id => municipality.id }}}
+  scope :school_name, lambda { |school_name| { :where => {"annual_results.school_name" => school_name }}}
   scope :in_year, lambda { |year| { :where => {"annual_results.year" => year } } }
   scope :not_in_year, lambda { |year| { :excludes => {"annual_results.year" => year } } }
 
