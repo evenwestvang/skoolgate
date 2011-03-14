@@ -9,6 +9,8 @@
 class County
   include Mongoid::Document
   field :name
+  field :link_name, :type => String
+
   field :result_average, :type => Float
   field :location, :type => Array
 
@@ -28,14 +30,13 @@ class Municipality
   field :student_body_count, :type => Integer
   field :result_average, :type => Float
   field :location, :type => Array
-
-  # Ok, we want this fast. Averages also go in schools
+  field :link_name, :type => String
   field :year_averages, :type => Hash
 
   referenced_in :county
   references_many :schools
 
-  # references_many :schools
+  scope :by_county, lambda { |county| { :where => { :county_id => county.id } } }
 
   after_create :add_to_counties
   def add_to_counties
@@ -50,11 +51,10 @@ class School
   include Mongoid::Document
   field :address, :type => String
   field :name, :type => String
+  field :link_name, :type => String
   field :student_body_count, :type => Integer
   field :location, :type => Array # latitude longitude
   field :result_average, :type => Float
-
-  # Ok, we want this fast. Averages also go in schools
   field :year_averages, :type => Hash
 
   referenced_in :county

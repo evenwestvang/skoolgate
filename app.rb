@@ -4,6 +4,10 @@ require 'benchmark'
 KLASSES = ["School", "Municipality"]
 VALID_YEAR_STRINGS = (2008..2010).map(&:to_s)
 
+before do
+  cache_control :public, :max_age => 36000
+end
+
 get '/marker_info/:marker_id' do |marker_id|
   content_type 'text/json', :charset => 'utf-8'
   klass, id = marker_id.split('_')
@@ -24,10 +28,12 @@ get '/get_markers/:lat/:lon/:lat2/:lon2/:year' do |lat, lon, lat2, lon2, year|
 
   if School.where(:location.within => {"$box" => box}).limit(401).count < 400
     result[:detailLevel] = "schools"
-    objects = School.where(:location.within => {"$box" => box}).only(:name, :location, :result_average, :year_averages, :student_body_count)
+    objects = School.where(:location.within => {"$box" => box}).
+      only(:name, :location, :result_average, :year_averages, :student_body_count)
   else
     result[:detailLevel] = "municipalities"
-    objects = Municipality.where(:location.within => {"$box" => box}).only(:name, :location, :year_averages, :result_average, :student_body_count)
+    objects = Municipality.where(:location.within => {"$box" => box}).
+      only(:name, :location, :year_averages, :result_average, :student_body_count)
   end
   
   result[:objects] = objects.map { |o| {
@@ -50,13 +56,26 @@ get '/' do
   haml :index
 end
 
-get '/schools' do
+get '/skolene' do
+  @counties = County.all
   haml :schools
 end
 
-get '/statistics' do
-  schools = School.all
+get '/skolene/:county/:municipality' do |county, muni, name|
+  @county = County.where(:link_name => county).first
+  @municipality = Municipality.by_county(@county).where(:link_name => muni).first
+  haml :schools
+end
 
+get '/skolene/:county/:municipality/:name' do |county, muni, name|
+  @county = County.where(:link_name => county).first
+  @municipality = Municipality.by_county(@county).where(:link_name => muni).first
+  @school = School.by_municipality(@municipality).where(:link_name => name).first
+  haml :school
+end
+
+get '/statistikk' do
+  schools = School.all
   @lon_average_json = schools.map do |s| 
     if s.location && s.location[0] && s.location[0] > 0
       {:name => "#{s.name} i #{s.municipality.name}", :x => s.result_average, :y => s.location[0]}
@@ -70,7 +89,7 @@ get '/statistics' do
   haml :statistics
 end
 
-get '/about' do
+get '/om' do
   haml :about
 end
 

@@ -38,6 +38,12 @@
           text: 'Lengdegrad'
         },
       },
+      tooltip: {
+         formatter: function() {
+                   return '<strong>'+ this.point.name +'</strong><br/>'+
+               "Lengdegrad:" + this.y.toFixed(1) +' – Resultat:'+ this.x.toFixed(2) ;
+         }
+      },
       xAxis: {
          max: 1,
          min: 0,
@@ -64,12 +70,17 @@
           defaultSeriesType: 'scatter'
       },
       title: {
-        text: "Gjøre små skoler det bedre?",
+        text: "Gjør små skoler det bedre?",
       },
       legend: {
         enabled: false
       },
-
+      tooltip: {
+         formatter: function() {
+                   return '<strong>'+ this.point.name +'</strong><br/>'+
+               "Elevtall:" + this.y.toFixed(1) +' – Resultat:'+ this.x.toFixed(2) ;
+         }
+      },
       yAxis: {
          max: 1000,
          min: 20,

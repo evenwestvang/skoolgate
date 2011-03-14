@@ -226,13 +226,9 @@ function MarkerKeeper(map) {
             series[ident] = {
               name: result.school_year + ". kl " + humanizeTestCode(result.test_code),
               data: [],
-              visible: false,
-              marker: {
-                radius: 4
-              }
+              visible: false
             }
           };
-
           series[ident].data.push({
             x: annual_result.year, 
             y: result.normalized_result
@@ -240,17 +236,19 @@ function MarkerKeeper(map) {
         });
       });
 
-      resultChartOptions.series = [averageSerie];
-      var sorted_keys = []
-      for (key in series) {
-        sorted_keys.push(key);
+      if (averageSerie.data.length > 0) {
+        resultChartOptions.series = [averageSerie];
+        var sorted_keys = []
+        for (key in series) {
+          sorted_keys.push(key);
+        }
+        sorted_keys = sorted_keys.sort();
+        for (key in sorted_keys) {
+          resultChartOptions.series.push(series[sorted_keys[key]]);
+        }
+        resultChartOptions.chart.renderTo = infoBox.children().last()[0];
+        chart = new Highcharts.Chart(resultChartOptions);
       }
-      sorted_keys = sorted_keys.sort();
-      for (key in sorted_keys) {
-        resultChartOptions.series.push(series[sorted_keys[key]]);
-      }
-      resultChartOptions.chart.renderTo = infoBox.children().last()[0];
-      chart = new Highcharts.Chart(resultChartOptions);
 
       var schoolPosition = new google.maps.LatLng(data.location[0],data.location[1]);
       var panoramaOptions = {

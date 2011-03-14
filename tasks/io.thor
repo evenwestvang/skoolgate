@@ -11,18 +11,28 @@ class Io < Thor
     # import_school_addresses
     # geocode_schools
     # geocode_munis
-    # canonical_school_names
-    calculate_averages
+    canonical_names
+    #calculate_averages
   end
 
   ADDRESS_STUDENT_BODY_COUNT_FIELDS = [:county, :municipality, :school_name, :address, :postal_code, :postal_place, :student_body_count]
 
-  desc "canonical_school_names", "Apply names to schools"
-  def canonical_school_names
+  desc "canonical_names", "Find canonical names for schools"
+  def canonical_names
+    require 'unicode'
     puts "\n\n*** Writing names into school objects"
     School.all.each do |school|
       school.name = school.annual_results.last.school_name
+      school.link_name = linkify(school.name)
       school.save!
+    end
+    Municipality.all.each do |muni|
+      muni.link_name = linkify(muni.name)
+      muni.save!
+    end
+    County.all.each do |county|
+      county.link_name = linkify(county.name)
+      county.save!
     end
   end
 
@@ -289,7 +299,6 @@ class Io < Thor
 
   no_tasks do
 
-
   # INCONSISTENCY WORKAROUND: Names do change
   MUNI_NAME_MAPPING = {
     "Kåfjord" => "Gáivuotna Kåfjord",
@@ -305,6 +314,10 @@ class Io < Thor
     "Aurskog Høland" => "Aurskog-Høland",
     "Kvam herad" => "Kvam"
   }
+  
+  def linkify name
+    return Unicode.downcase(name).gsub(/[-\/\(\)]/, ' ').gsub(/\s+/, '_')
+  end
 
   def sanitize_municipality_name name
     # INCONSISTENCY WORKAROUND: Ok, so they put qualifiers in the municipality names in 2009

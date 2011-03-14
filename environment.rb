@@ -21,6 +21,13 @@ configure :development do
       Mongo::Connection.new(host, 27017, :slave_ok => true).db(name)
     ]
     config.persist_in_safe_mode = false
+
+
+    # use Rack::Cache,
+    #   :verbose     => true,
+    #   :metastore   => 'memcached://localhost:11211/meta',
+    #   :entitystore => 'memcached://localhost:11211/body'
+
   end
 end
 
