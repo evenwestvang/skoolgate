@@ -76,22 +76,26 @@ get '/statistikk' do
       {:name => "#{s.name} i #{s.municipality.name}", :x => s.result_average, :y => s.student_body_count}
     end
   end.compact.to_json
+  @page_title = "- statistikk"
   haml :statistics
 end
 
 get '/skolene' do
   @counties = County.all.order_by(:name.asc)
+  @page_title = "for alle skolene i Norge"
   haml :schools
 end
 
 get '/skolene/:county' do |county|
   @county = County.where(:link_name => county).first
+  @page_title = "for skolene i #{@county.name} fylke"
   haml :schools_for_county
 end
 
 get '/skolene/:county/:municipality' do |county, muni|
   @county = County.where(:link_name => county).first
   @municipality = Municipality.by_county(@county).where(:link_name => muni).first
+  @page_title = "for skolene i #{@municipality.name} kommune"
   haml :schools_for_municipality
 end
 
@@ -99,10 +103,12 @@ get '/skolene/:county/:municipality/:name' do |county, muni, name|
   @county = County.where(:link_name => county).first
   @municipality = Municipality.by_county(@county).where(:link_name => muni).first
   @school = School.by_municipality(@municipality).where(:link_name => name).first
+  @page_title = "for #{@school.name}"
   haml :school
 end
 
 get '/om' do
+  @page_title = "om tjenesten"
   haml :about
 end
 
