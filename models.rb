@@ -19,14 +19,12 @@ class County
   def print_tick
     print "C "
   end
-
 end
 
 class Municipality
   include Mongoid::Document
   field :name
   field :link_name, :type => String
-
   field :student_body_count, :type => Integer
   field :result_average, :type => Float
   field :location, :type => Array
@@ -54,9 +52,7 @@ class School
   include Mongoid::Document
   field :address, :type => String
   field :name, :type => String
-
   field :link_name, :type => String
-
   field :student_body_count, :type => Integer
   field :location, :type => Array # latitude longitude
   field :result_average, :type => Float

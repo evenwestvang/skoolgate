@@ -19,8 +19,6 @@ function resizeFrame() {
 /* Maps */
 
 function initMaps(options) {
-  console.info(options);
-
   var latlng;
   if (options.ll) {
     var latlng = new google.maps.LatLng(options.ll[0], options.ll[1]);

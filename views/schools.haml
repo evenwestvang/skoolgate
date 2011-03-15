@@ -3,6 +3,7 @@
     %ul
       %li.title Alle skolene i Norge
   %section
+    %h1.accented= "Skolene i <strong>Norge</strong>"
     %dl
       - @counties.each do |county| 
         %dt= link_to county.name, "/skolene/#{county.link_name}"

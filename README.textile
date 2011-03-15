@@ -18,8 +18,8 @@ _Description_
   
 
 TODO:
-  * ranked static stats pages: counties / municipalities w/ map links
-  * finish statistics page
+  * view single schools
+  * pretty stuff up
   
 DONE:
   * setup Sinatra-app with MongoDB and Mongoid glue
