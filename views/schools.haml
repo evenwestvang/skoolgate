@@ -8,7 +8,7 @@
         %dt= link_to county.name, "/skolene/#{county.link_name}"
         %dd
           %dl
-            - county.municipalities.each do |municipality|
+            - county.municipalities.order_by(:name.asc).each do |municipality|
               %dt= link_to municipality.name, "/skolene/#{municipality.county.link_name}/#{municipality.link_name}"
               %dd
                 %dl

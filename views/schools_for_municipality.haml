@@ -5,7 +5,7 @@
       %li= link_to @county.name, "/skolene/#{@county.link_name}"
       %li= link_to "Norge", "/skolene"
   %section
-    %h1= "Alle skolene i <strong>#{@municipality.name}</strong> kommune"
+    %h1= "Skolene i <strong>#{@municipality.name}</strong> kommune"
     %ul
-      - @municipality.schools.each do |school|
+      - @municipality.schools.order_by(:name.asc).each do |school|
         %li= link_to school.name, "/skolene/#{school.county.link_name}/#{school.municipality.link_name}/#{school.link_name}"

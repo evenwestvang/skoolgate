@@ -5,12 +5,12 @@
       %li= link_to "Norge", "/skolene"
 
   %section
-    %h1= "Alle skolene i <strong>#{@county.name}</strong> fylke"
+    %h1= "Skolene i <strong>#{@county.name}</strong> fylke"
     %dl
-      - @county.municipalities.each do |municipality|
+      - @county.municipalities.order_by(:name.asc).each do |municipality|
         %dt= link_to municipality.name, "/skolene/#{municipality.county.link_name}/#{municipality.link_name}"
         %dd
           %dl
             %ul
-              - municipality.schools.each do |school|
+              - municipality.schools.order_by(:name.asc).each do |school|
                 %li= link_to school.name, "/skolene/#{school.county.link_name}/#{school.municipality.link_name}/#{school.link_name}"

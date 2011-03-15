@@ -36,10 +36,14 @@ body
   :font-size 12px
   :color $white
   :text-transform uppercase
-  :background-color #222
+  :background-color #333
 
   h1, h2, h3, h4, h5
     @include bold_type
+    :color #bbb
+    
+    strong
+      :color #fff
 
   #map_canvas
     :width 100%
@@ -70,7 +74,7 @@ body
   
     nav.year_selector
       :font-size 28px
-      :line-height 25px
+      :line-height 28px
       @include bold_type
 
       .active
@@ -132,7 +136,7 @@ body
 .content_page
   :padding 10px
   :width 60%
-  :margin 70px 0px 0px 10px
+  :margin 10px 0px 0px 10px
 
   h1
     :font-weight normal
@@ -143,7 +147,7 @@ body
     ul 
       li
         :padding 8px
-        :background-color #333
+        :background-color #000
         :margin 0px 0px 2px 0px
 
       li.title
@@ -152,7 +156,7 @@ body
         :color #000
   
   section
-    :padding 10px 10px 10px 10px
+    :padding 1px 15px 10px 15px
     :margin 0px 0px 10px 0px
     :clear both
     :display block
@@ -161,12 +165,13 @@ body
     h2
       :clear both
       :display block
-      :margin 3px 10px 5px 00px
-      :padding 10px
+      :margin 1px 10px 10px 00px
+      :padding 5px 10px 10px 5px
       :width 200px
       :background-color $accent
       :color #000
       :float left
+      :font-size 10pt
       :font-weight normal
   
     h2.contact

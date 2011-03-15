@@ -80,7 +80,7 @@ get '/statistikk' do
 end
 
 get '/skolene' do
-  @counties = County.all
+  @counties = County.all.order_by(:name.asc)
   haml :schools
 end
 
