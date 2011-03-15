@@ -216,7 +216,7 @@ function MarkerKeeper(map, options) {
       infoBox = $("#schoolTemplate").tmpl(data).appendTo($(boxContent));
 
       var averageSerie = {
-        name: "Gjennomsnitt",
+        name: "Årsresultat",
         data: []
       };
 
