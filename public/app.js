@@ -3,13 +3,13 @@
 var map = null;
 var currentInfoBox = null;
 
-function initialize() {
+function initialize(options) {
   jQuery.event.add(window, "resize", resizeFrame);
   CFInstall.check({
      mode: "overlay",
      destination: "http://skoleporten.bengler.no"
    });
-   initMaps();
+   initMaps(options);
 }
 
 function resizeFrame() {
@@ -18,8 +18,18 @@ function resizeFrame() {
 
 /* Maps */
 
-function initMaps() {
-  var latlng = new google.maps.LatLng(59.86176086468102, 10.75612752648925);
+function initMaps(options) {
+  console.info(options);
+
+  var latlng;
+  if (options.ll) {
+    var latlng = new google.maps.LatLng(options.ll[0], options.ll[1]);
+  } else {
+    var latlng = new google.maps.LatLng(59.86176086468102, 10.75612752648925);
+  }
+  
+  if (options === undefined) { options = {} };
+
   var myOptions = {
     zoom: 11,
     center: latlng,
@@ -34,7 +44,7 @@ function initMaps() {
       mapStyle);
   map.mapTypes.set('styled', styledMap);
   map.setMapTypeId('styled');
-  var markerKeeper = new MarkerKeeper(map);
+  var markerKeeper = new MarkerKeeper(map, options);
   
   google.maps.event.addListener(this.map, "click", function() {
     markerKeeper.closeAnyInfoboxes();
@@ -71,7 +81,7 @@ function initMaps() {
   $("nav.year_selector").show();
 }
 
-function MarkerKeeper(map) {
+function MarkerKeeper(map, options) {
   this.markers = [];
   this.markerHash = {};
   this.previousQueryTime = new Date().getTime();
@@ -80,7 +90,7 @@ function MarkerKeeper(map) {
   this.detailLevel = 0;
   this.activeYear = 2010;
   this.map = map;
-  this.useContrast = false;
+  this.useContrast = options.useContrast;
 
 
   this.setYear = function(year, clicked) {

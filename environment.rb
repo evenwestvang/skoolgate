@@ -23,6 +23,8 @@ configure :development do
     config.persist_in_safe_mode = false
 
 
+
+
     # use Rack::Cache,
     #   :verbose     => true,
     #   :metastore   => 'memcached://localhost:11211/meta',
@@ -41,6 +43,12 @@ configure :production do
     ]
     config.persist_in_safe_mode = false
   end
+  
+  before do
+    cache_control :public, :max_age => 36000
+  end
+
+
 
   use Rack::Cache,
     :verbose     => true,

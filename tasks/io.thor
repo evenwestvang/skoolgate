@@ -5,14 +5,14 @@ class Io < Thor
   desc "import_all", "import all schools, afresh"
   def import_all
     require './environment'
-    # import_data('data/national_benchmarks_2008.csv', 2008, :fresh => true)
-    # import_data('data/national_benchmarks_2009.csv', 2009)
-    # import_data('data/national_benchmarks_2010.csv', 2010)
-    # import_school_addresses
-    # geocode_schools
-    # geocode_munis
+    import_data('data/national_benchmarks_2008.csv', 2008, :fresh => true)
+    import_data('data/national_benchmarks_2009.csv', 2009)
+    import_data('data/national_benchmarks_2010.csv', 2010)
+    import_school_addresses
+    geocode_schools
+    geocode_munis
     canonical_names
-    #calculate_averages
+    calculate_averages
   end
 
   ADDRESS_STUDENT_BODY_COUNT_FIELDS = [:county, :municipality, :school_name, :address, :postal_code, :postal_place, :student_body_count]
@@ -44,8 +44,8 @@ class Io < Thor
     munis = Municipality.where(:location.exists => false).all
     munis.each do |muni|
       puts "Coding #{muni.name}"
-      bounds = Geokit::Geocoders::GoogleGeocoder.geocode(muni.name, :bias => 'no').suggested_bounds
-      res = Geokit::Geocoders::GoogleGeocoder.geocode("#{muni.name}", :bias => bounds)
+      bounds = Geokit::Geocoders::GoogleGeocoder.geocode("#{muni.name}, norway", :bias => 'no').suggested_bounds
+      res = Geokit::Geocoders::GoogleGeocoder.geocode("#{muni.name}, norway", :bias => bounds)
       if res
         muni.location = [res.lat, res.lng]
         muni.save!
@@ -62,10 +62,8 @@ class Io < Thor
     require 'geokit'
 
     uncoded = 0
-
     schools = School.where(:address.exists => true).where(:location.exists => false)
     count = schools.count
-
     schools.each_with_index do |school, index|
       puts "Coding #{school.address} – #{index}/#{count}"
       bounds = Geokit::Geocoders::GoogleGeocoder.geocode(school.municipality.name, :bias => 'no').suggested_bounds

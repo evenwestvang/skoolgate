@@ -2,10 +2,7 @@
 
 $accent: #1af
 $accent_plus: #adf
-
 $footer: rgba(10,10,10,0.9)
-
-$header: rgba(255,255,255,1)
 $header: rgba(10,10,10,0.9)
 
 $black: #333
@@ -35,11 +32,14 @@ a:hover
 
 body
   :margin 0px
-  :font-family 'Helvetica', 'Helvetica', 'Arial'
+  :font-family 'HelveticaNeueLTStd45Light', 'Helvetica', 'Arial', 'sans-serif'
   :font-size 12px
   :color $white
   :text-transform uppercase
   :background-color #222
+
+  h1, h2, h3, h4, h5
+    @include bold_type
 
   #map_canvas
     :width 100%
@@ -51,40 +51,40 @@ body
     :right 0
     :margin 0
     :padding 0
+    :width 35%
 
-  .header_top
-    :background-color $header
-    :padding 15px 25px 5px 25px
-    h1
-      :display inline-block
-      :font-size 28px
-      :line-height 28px
-      :font-weight bold
-      :margin 0
-    h1
-      a
-        :color white
+    .header_top
+      :background-color $header
+      :padding 15px 25px 5px 25px
+      .logo
+        :display inline-block
+        :font-size 28px
+        :line-height 25px
+        :margin 0
+
+        a
+          :color white
 
     nav
       @include list_as_nav
   
     nav.year_selector
-      :font-size 22px
-      :line-height 22px
+      :font-size 28px
+      :line-height 25px
+      @include bold_type
 
       .active
         a
           :color white
 
   .header_search_ui
-    :font-weight bold
+    :font-weight normal
     :padding-top 0
     :background-color rgba(20,140,255,0.8)
 
     #view_stats
       :color $white
       :padding 8px 8px 7px 20px
-      :text-shadow 1px 1px 2px #222
     
     form.search
       :position absolute
@@ -132,10 +132,27 @@ body
 .content_page
   :padding 10px
   :width 60%
-  :margin 10px 0px 0px 20px
+  :margin 70px 0px 0px 10px
+
+  h1
+    :font-weight normal
+
+  nav.school_listing
+    @include list_as_nav
+
+    ul 
+      li
+        :padding 8px
+        :background-color #333
+        :margin 0px 0px 2px 0px
+
+      li.title
+        @include bold_type
+        :background-color #fff
+        :color #000
   
   section
-    :padding 10px
+    :padding 10px 10px 10px 10px
     :margin 0px 0px 10px 0px
     :clear both
     :display block
@@ -150,6 +167,7 @@ body
       :background-color $accent
       :color #000
       :float left
+      :font-weight normal
   
     h2.contact
       :width 90%
@@ -173,7 +191,6 @@ body
         :margin-bottom 2px
 
 .stats_page
-
   .graph
     :width 100%
     :height 420px
@@ -188,7 +205,7 @@ footer
   @include list_as_nav
   :background-color $footer
   :color $lite
-  :padding 5px 10px 5px 20px
+  :padding 5px 10px 5px 40px
   :margin 20px 0px 10px 0px
   :clear both
   :display block

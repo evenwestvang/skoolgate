@@ -4,9 +4,23 @@ require 'benchmark'
 KLASSES = ["School", "Municipality"]
 VALID_YEAR_STRINGS = (2008..2010).map(&:to_s)
 
-before do
-  cache_control :public, :max_age => 36000
+get '/usecontrast' do
+  @options = { :useContrast => true }
+  @map_page = true
+  haml :index
 end
+
+get '/ll/:lat/:lon' do |lat, lon|
+  @options = { :ll => [lat.to_f, lon.to_f] }
+  @map_page = true
+  haml :index
+end
+
+get '/' do
+  @map_page = true
+  haml :index
+end
+
 
 get '/marker_info/:marker_id' do |marker_id|
   content_type 'text/json', :charset => 'utf-8'
@@ -20,7 +34,6 @@ end
 get '/get_markers/:lat/:lon/:lat2/:lon2/:year' do |lat, lon, lat2, lon2, year|
   content_type 'text/json', :charset => 'utf-8'
   box = [[lat.to_f, lon.to_f], [lat2.to_f, lon2.to_f]]
-
   year = nil unless VALID_YEAR_STRINGS.include?(year)
   year ||= "2010"
   objects = nil
@@ -51,29 +64,6 @@ get '/stylesheet.css' do
   sass :stylesheet, :style => :compact
 end
 
-get '/' do
-  @map_page = true
-  haml :index
-end
-
-get '/skolene' do
-  @counties = County.all
-  haml :schools
-end
-
-get '/skolene/:county/:municipality' do |county, muni, name|
-  @county = County.where(:link_name => county).first
-  @municipality = Municipality.by_county(@county).where(:link_name => muni).first
-  haml :schools
-end
-
-get '/skolene/:county/:municipality/:name' do |county, muni, name|
-  @county = County.where(:link_name => county).first
-  @municipality = Municipality.by_county(@county).where(:link_name => muni).first
-  @school = School.by_municipality(@municipality).where(:link_name => name).first
-  haml :school
-end
-
 get '/statistikk' do
   schools = School.all
   @lon_average_json = schools.map do |s| 
@@ -87,6 +77,29 @@ get '/statistikk' do
     end
   end.compact.to_json
   haml :statistics
+end
+
+get '/skolene' do
+  @counties = County.all
+  haml :schools
+end
+
+get '/skolene/:county' do |county|
+  @county = County.where(:link_name => county).first
+  haml :schools_for_county
+end
+
+get '/skolene/:county/:municipality' do |county, muni|
+  @county = County.where(:link_name => county).first
+  @municipality = Municipality.by_county(@county).where(:link_name => muni).first
+  haml :schools_for_municipality
+end
+
+get '/skolene/:county/:municipality/:name' do |county, muni, name|
+  @county = County.where(:link_name => county).first
+  @municipality = Municipality.by_county(@county).where(:link_name => muni).first
+  @school = School.by_municipality(@municipality).where(:link_name => name).first
+  haml :school
 end
 
 get '/om' do

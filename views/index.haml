@@ -1,7 +1,7 @@
 :javascript
   $(function(){
     resizeFrame();
-    initialize();
+    initialize(#{(@options || {}).to_json});
   });
   
 %script{:id => "schoolTemplate", :type => "text/x-jquery-tmpl"}
