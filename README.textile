@@ -6,9 +6,12 @@
   
 
 TODO:
-  * view single schools
-  * pretty stuff up
+  * Single school views should really use full screen maps
+  * School popups should have links to municipality and county lists
   
+ISSUES:
+  * Municipalities don't need FB-like buttons, switch to FBJS
+
 DONE:
   * setup Sinatra-app with MongoDB and Mongoid glue
   * read CSV data
@@ -46,6 +49,8 @@ v2
   * run geocoding
   * aggregate results by test type and year for filtering
   * school have links to streetviews. Nice.
+  * view single schools
+  * pretty stuff up
 
 
   
