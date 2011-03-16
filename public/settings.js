@@ -42,7 +42,7 @@ resultChartOptions = {
      align: 'right',
      verticalAlign: 'top',
      x: 0,
-     y: 0,
+     y: -15,
      borderWidth: 0
   },
 };
@@ -120,7 +120,7 @@ Highcharts.theme = {
 		},
 		itemHiddenStyle: {
 			color: '#444'
-		}
+		},
 	},
 	labels: {
 		style: {

@@ -1,9 +1,7 @@
 
-*Presents data from Norwegian national school benchmarks.*
-
+*Skoolgate presents data from Norwegian national school benchmarks.*
 
 .plan:
-  
 
 TODO:
   * Single school views should really use full screen maps
