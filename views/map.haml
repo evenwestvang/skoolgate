@@ -1,6 +1,23 @@
 - @map_page = true
 
+#fb-root
 :javascript
+  window.fbAsyncInit = function() {
+    FB.init({
+      app_id : 137325976336227,
+      status : true, 
+      cookie : true, 
+      xfbml  : true
+    });
+  };
+
+  (function() {
+    var e = document.createElement('script');
+    e.src = document.location.protocol + '//connect.facebook.net/nb_NO/all.js';
+    e.async = true;
+    document.getElementById('fb-root').appendChild(e);
+  }());
+
   options = #{(map_options || {}).to_json};
   $(function(){
     initialize(options);
@@ -8,6 +25,7 @@
 
 %script{:id => "schoolTemplate", :type => "text/x-jquery-tmpl"}
   .school_infobox
+    .fb_like
     .student_body_count
       %span{:class => "count"} 
         ${student_body_count}
@@ -17,5 +35,4 @@
       %span{:id => "street_view_button", :style => "display:none;"} Se panorama
       &nbsp;
     .chartBox
-  :plain
-    <iframe src="http://www.facebook.com/plugins/like.php?locale=nb_NO&href=${school_url}&amp;layout=standard&amp;show_faces=false&amp;width=350&amp;action=like&amp;font=helvetica&amp;colorscheme=light&amp;height=25" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:350px; height:25px;" allowTransparency="true"></iframe>
+    .like_box

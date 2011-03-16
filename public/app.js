@@ -8,11 +8,19 @@ function initialize(options) {
     jQuery.event.add(window, "resize", resizeFrame);
     resizeFrame();
   }
+
+  window.fbAsyncInit = function() {
+    FB.init({appId: '137325976336227',
+    status: true,
+    cookie: true,
+    xfbml: true});
+  };
+
   CFInstall.check({
      mode: "overlay",
      destination: "http://skoleporten.bengler.no"
-   });
-   initMaps(options);
+  });
+  initMaps(options);
 }
 
 function resizeFrame() {
@@ -263,6 +271,11 @@ function MarkerKeeper(map, options) {
         }
         resultChartOptions.chart.renderTo = infoBox.children().last()[0];
         chart = new Highcharts.Chart(resultChartOptions);
+
+        var like = '<fb:like href="'+data.school_url+'" width="400" height="20" show_faces="false" layout="standard" action="recommend" colorscheme="light"/>'
+        var insert = infoBox.children().last()
+        insert.append(like);
+        FB.XFBML.parse(insert[0]);
       }
 
       var schoolPosition = new google.maps.LatLng(data.location[0],data.location[1]);
