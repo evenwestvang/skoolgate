@@ -126,12 +126,12 @@ helpers do
     obj.class.to_s << "_" << obj.id.to_s
   end
   
-  def school_url school
+  def school_url(school)
     "/skolene/#{school.county.link_name}/#{school.municipality.link_name}/#{school.link_name}"
   end
   
-  def link_to_school school
-    link_to school.name, school_url(school_url)
+  def link_to_school(school)
+    link_to school.name, school_url(school)
   end
 
   def partial(page, options={})
