@@ -2,8 +2,8 @@
   %nav.school_listing
     %ul
       %li.title Alle skolene i
-      %li= link_to @county.name, "/skolene/#{@county.link_name}"
       %li= link_to "Norge", "/skolene"
+      %li= link_to @county.name, "/skolene/#{@county.link_name}"
   %section
     %h1.accented= "Skolene i <strong>#{@municipality.name}</strong> kommune"
     %ul

@@ -6,16 +6,16 @@
     initialize(options);
   });
 
-
 %script{:id => "schoolTemplate", :type => "text/x-jquery-tmpl"}
   .school_infobox
     .student_body_count
       %span{:class => "count"} 
         ${student_body_count}
       elever
-    .level_name ${level_name}
     %h2 ${name}
     .address
-      %span{:id => "street_view_button", :style => "display:none;"} Se panoramabilde
+      %span{:id => "street_view_button", :style => "display:none;"} Se panorama
       &nbsp;
     .chartBox
+  :plain
+    <iframe src="http://www.facebook.com/plugins/like.php?href=${school_url}&amp;layout=standard&amp;show_faces=false&amp;width=150&amp;action=recommend&amp;font=arial&amp;colorscheme=light&amp;height=80" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:400px; height:25px;" allowTransparency="true"></iframe>

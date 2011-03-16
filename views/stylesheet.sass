@@ -3,7 +3,7 @@
 $accent: #1af
 $accent_plus: #adf
 $footer: rgba(10,10,10,0.9)
-$header: rgba(10,10,10,0.9)
+$header: rgba(10,10,10,0.8)
 
 $black: #333
 $lite: #999
@@ -67,7 +67,7 @@ body
       .logo
         :display inline-block
         :font-size 28px
-        :line-height 18px
+        :line-height 25px
         :margin 0
 
         a
@@ -89,22 +89,15 @@ body
   .header_search_ui
     :font-weight normal
     :padding-top 0
-    :background-color rgba(20,140,255,0.8)
+    :background-color rgba(30,30,30,0.8)
+    :border-top rgba(0,0,0,0.9) 1px solid
 
     #view_stats
-      :color $white
-      :padding 8px 8px 7px 20px
+      :color #aaa
+      :padding 5px 8px 7px 25px
     
-    form.search
-      :position absolute
-      :top 0px
-      @include vertical-gradient(rgba(0,0,00,0.3), rgba(0,0,30,0.1))
-      @include corners(0px,0,0,3px)
-      :padding 20px
-      :width 250px
-
   .header_search_ui.less_details
-    :background-color rgba(255,100,10,0.8)
+    :background-color rgba(80,30,30,0.8)
 
   .school_infobox
     h2
@@ -141,7 +134,7 @@ body
 .content_page
   :padding 10px
   :width 60%
-  :margin 10px 0px 0px 10px
+  :margin 0px 0px 0px 10px
 
   h1
     :font-weight normal

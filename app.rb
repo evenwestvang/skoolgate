@@ -25,7 +25,9 @@ get '/marker_info/:marker_id' do |marker_id|
   klass, id = marker_id.split('_')
   if KLASSES.include?(klass)
     klass = klass.constantize 
-    return klass.find(id).to_json
+    res = klass.find(id)
+    res[:school_url] = BASE_URL + school_url(res) if res.is_a? School
+    return res.to_json
   end
 end
 
@@ -122,6 +124,14 @@ end
 helpers do
   def id_for_object(obj)
     obj.class.to_s << "_" << obj.id.to_s
+  end
+  
+  def school_url school
+    "/skolene/#{school.county.link_name}/#{school.municipality.link_name}/#{school.link_name}"
+  end
+  
+  def link_to_school school
+    link_to school.name, school_url(school_url)
   end
 
   def partial(page, options={})

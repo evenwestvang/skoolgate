@@ -12,6 +12,8 @@ require 'yajl/json_gem'
 set :root, File.dirname(__FILE__) # <- do we need this? // check to see if templating breaks without it
 set :haml, :format => :html5
 
+BASE_URL = "http://skoleporten.bengler.no"
+
 configure :development do
     Mongoid.configure do |config|
       name = "skoolgate_development"
@@ -47,8 +49,6 @@ configure :production do
   before do
     cache_control :public, :max_age => 36000
   end
-
-
 
   use Rack::Cache,
     :verbose     => true,

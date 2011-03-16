@@ -216,15 +216,15 @@ function MarkerKeeper(map, options) {
   this.markerClicked = function(map, marker) {
     var self = this;
     boxContent = document.createElement("div");
-    boxContent.style.cssText = "border: 1px solid black;margin-top: 0px; background: rgba(0,0,0,0.80); padding: 5px 10px 10px 10px; border-radius:3px; -moz-border-radius:3px; webkit-border-radius:3px; -moz-box-shadow #000 5px 5px 10px; -webkit-box-shadow #000 5px 5px 10px; box-shadow #000 5px 5px 10px;";
+    boxContent.style.cssText = "border: 1px solid black;margin-top: 0px; background: rgba(0,0,0,0.80); padding: 5px 10px 5px 10px; border-radius:3px; -moz-border-radius:3px; webkit-border-radius:3px; -moz-box-shadow #000 5px 5px 10px; -webkit-box-shadow #000 5px 5px 10px; box-shadow #000 5px 5px 10px;";
 
     $.getJSON('/marker_info/' + marker.ident, function(data, textStatus) {
+      data.school_url = encodeURI(data.school_url);
       infoBox = $("#schoolTemplate").tmpl(data).appendTo($(boxContent));
       var averageSerie = {
         name: "Årsresultat",
         data: []
       };
-
       var series = {};
 
       $(data.annual_results).each(function(i,annual_result) {
@@ -267,12 +267,14 @@ function MarkerKeeper(map, options) {
 
       var schoolPosition = new google.maps.LatLng(data.location[0],data.location[1]);
 
+      self.map.panTo(schoolPosition);
+
       if (self.options.fullscreen) {
-        self.map.panTo(schoolPosition);
         self.map.panBy(320, 150);
       } else {
-        self.map.panBy(200, 150);
+        self.map.panBy(180, 150);
       }
+
       var panoramaOptions = {
         pov: {
           heading: 34,
