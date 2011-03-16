@@ -142,7 +142,8 @@ Highcharts.theme = {
 	},
   credits: 
   {
-    style: { color: '#333;text-transform:lowercase;position:relative;top:-20px;' }
+    style: { color: '#333;text-transform:lowercase;' },
+    position: {x: -80, y: -28 }
   },
 	plotOptions: {
     series: {
