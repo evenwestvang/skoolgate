@@ -31,12 +31,12 @@ a:hover
 
 body
   :margin 0px
-  :font-family 'HelveticaNeueLTStd45Light', 'Helvetica', 'Arial', 'sans-serif'
+  :font-family "Helvetica Neue", "Helvetica", sans-serif
+  :font-weight 300
   :font-size 12px
   :color $white
   :text-transform uppercase
   :background-color #333
-
   
   h1.accented, h2.accented, h3.accented, h4.accented, h5.accented
     :color #bbb
@@ -67,7 +67,7 @@ body
       .logo
         :display inline-block
         :font-size 28px
-        :line-height 25px
+        :line-height 18px
         :margin 0
 
         a
@@ -75,11 +75,12 @@ body
 
     nav
       @include list_as_nav
+      @include bold_type
   
     nav.year_selector
-      :font-size 28px
-      :line-height 28px
-      @include bold_type
+      :font-weight 300
+      :font-size 36px
+      :line-height 34px
 
       .active
         a
@@ -118,19 +119,19 @@ body
     .student_body_count
       :margin-right 10px
       :color #000
-      :background-color #555
+      :background-color #666
       :float right
       :width 50px
       :padding 8px 3px 3px 3px
       :font-size 8pt
       :text-align center
       @include corners(3px,3px,3px,3px)
-      :border 2px solid #444
+      :border 1px solid #444
     
     span.count
       :font-size 12pt
       :line-height 10px
-      :font-weight bold
+      @include bold_type
       :text-shadow 1px 1px 2px #888
     
     .chartBox
@@ -150,12 +151,12 @@ body
 
     ul 
       li
+        @include bold_type
         :padding 8px
         :background-color #000
         :margin 0px 0px 2px 0px
 
       li.title
-        @include bold_type
         :background-color #fff
         :color #000
   
@@ -167,23 +168,15 @@ body
     :background-color $footer
 
     h2
-      :clear both
-      :display block
-      :margin 1px 10px 10px 00px
-      :padding 5px 10px 10px 5px
       :width 200px
-      :background-color $accent
-      :color #000
-      :float left
-      :font-size 10pt
-      :font-weight normal
+      :color #fff
   
     h2.contact
       :width 90%
 
     h2.contact a
       :text-decoration underline
-      :color #000
+      :color #fff
   
     p
       :font-size 10pt
@@ -195,15 +188,23 @@ body
       :display inline-block
       :margin 0
       :text-transform none
-    
+
       li
         :margin-bottom 2px
+
+  #school_map_canvas 
+    :margin 10px 0px
+    :width 100%
+    :height 400px
 
 .stats_page
   .graph
     :width 100%
     :height 420px
 
+
+#container.no_map .header_search_ui
+  :display none
 
 #container.map footer
   :position absolute
@@ -214,7 +215,7 @@ footer
   @include list_as_nav
   :background-color $footer
   :color $lite
-  :padding 5px 10px 5px 40px
+  :padding 5px 10px 5px 35px
   :margin 20px 0px 10px 0px
   :clear both
   :display block

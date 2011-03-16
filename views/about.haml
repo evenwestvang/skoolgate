@@ -32,7 +32,37 @@
     %h2 Datakvalitet
     %p
       :plain
-        Om du vil hjelpe til å forbedre tjenesten finner du <a href="https://github.com/evenwestvang/skoolgate">kildekoden på github</a>. Hele <a href="http://origo.no/-/bulletin/show/606082">utviklingsprosessen er også forresten dokumentert</a>.
+        Datagrunnlaget for skoleporten.bengler.no er overlevert fra utdanningsdirektoratet. De mente imidlertid det var for arbeidskrevende å legge ved unike nøkler for skolene og prøvene. Derfor er resultater på tvers av år og adresse- og elevinformasjon spleiset sammen ved å sammenligne skolenavn. Det var <a href="https://github.com/evenwestvang/skoolgate/blob/master/tasks/io.thor">en ganske omfattende oppgave</a> (les: som å skjære av seg armen med en slu saks) og det kan forekomme feil. Fremgangsmåten for 2009 var forresten som følger:
+
+    %p
+      %ul
+        %li 
+          Les resultatsettene for 2008
+        %li 
+          Opprett skoler, fylker og kommuner fortløpende
+        %li 
+          Les resultatsettene for 2009
+        %li 
+          Legg de resultatene man kan på skolene fra 2008 som har samme navn
+        %li 
+          Ta resultatene som ikke matcher noe skolenavn og
+        %li 
+          Finn skolene i kommunen fra 2008 som ennå ikke har fått resultater for 2009
+        %li 
+          Forsøk med match på hele 2008 navnet mot 2009 navnet som substreng og vise versa
+        %li 
+          Kjør så levenshtein-distanse på navnene til skolene i samme kommune og match de over en gitt terskel. Bruk alle navnene skolen noengang har hatt.
+        %li 
+          Opprett skolene som fortsatt ikke har fått en match
+    %p
+      :plain
+        Det sparer muligens utdanningsdirektoratet tid å ikke nøkle informasjonen sin skikkelig (f.eks på organisasjonsnummer), men for oss som forsøker å bruke informasjonen på en strukturert måte er det relativt kostbasrt.
+    %p
+      :plain 
+        Det mangler også forresten rundt 218 skoler hvor navnene i adresselistene ikke stemte overens med navnene på skolene. Om du ikke finner en skole er det sansynligvis på grunn av dette. Du kan eventelt sende en mail til <a href="mailto:post@utdanningsdirektoratet.no">utdanningsdirektoratet</a> og be de sende meg nasjonale prøver, adresser og elevtall nøklet sammen på en skikkelig måte. Nuvel.
+    %p
+      :plain
+        Om du finner på en lurt hjørne du har lyst til å legge til her kan du sjekke ut all kildekoden og datagrunnlaget fra <a href="https://github.com/evenwestvang/skoolgate">github</a>. Hele første runde av <a href="http://origo.no/-/bulletin/show/606082">utviklingsprosessen er også forresten overgrundig dokumentert</a>.
 
   %section
     %h2.contact

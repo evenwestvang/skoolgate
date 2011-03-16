@@ -1,18 +1,2 @@
-:javascript
-  $(function(){
-    resizeFrame();
-    initialize(#{(@options || {}).to_json});
-  });
-  
-%script{:id => "schoolTemplate", :type => "text/x-jquery-tmpl"}
-  .school_infobox
-    .student_body_count
-      %span{:class => "count"} 
-        ${student_body_count}
-      elever
-    .level_name ${level_name}
-    %h2 ${name}
-    .address 
-      %span{:id => "street_view_button", :style => "display:none;"} Se panoramabilde
-      &nbsp;
-    .chartBox
+= partial :map, :locals => {:map_options => @map_options}
+

@@ -1,18 +1,6 @@
 
 *Presents data from Norwegian national school benchmarks.*
 
-_Source data set_
-http://www.dagbladet.no/nyheter/2008/11/13/553824.html / alt for 2008
-
-_Processed data at_
-https://spreadsheets.google.com/ccc?key=0AonGfbsFlQRLdFNyVDIyQjhYZm4zX3ZTZmNuQnQwQlE&hl=en
-
-*Please help correct any errors.*
-
-_Description_
-* NPREG05 = regning for 5.-klassingene, NPREG08 = regning for 8.-klassingene.
-* NPLES05 = lesning for 5.-klassingene, NPLES08 = lesning for 8.-klassingene.
-* NPENG05 = engelsk for 5.-klassingene, NPENG08 = engelsk for 8.klassingene.
 
 .plan:
   

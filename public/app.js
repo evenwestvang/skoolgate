@@ -4,7 +4,10 @@ var map = null;
 var currentInfoBox = null;
 
 function initialize(options) {
-  jQuery.event.add(window, "resize", resizeFrame);
+  if (options.fullscreen) {
+    jQuery.event.add(window, "resize", resizeFrame);
+    resizeFrame();
+  }
   CFInstall.check({
      mode: "overlay",
      destination: "http://skoleporten.bengler.no"
@@ -19,6 +22,7 @@ function resizeFrame() {
 /* Maps */
 
 function initMaps(options) {
+  options = options || {};
   var latlng;
   if (options.ll) {
     var latlng = new google.maps.LatLng(options.ll[0], options.ll[1]);
@@ -26,8 +30,6 @@ function initMaps(options) {
     var latlng = new google.maps.LatLng(59.86176086468102, 10.75612752648925);
   }
   
-  if (options === undefined) { options = {} };
-
   var myOptions = {
     zoom: 11,
     center: latlng,
@@ -36,8 +38,10 @@ function initMaps(options) {
     navigationControlOptions: { 
       style: google.maps.NavigationControlStyle.DEFAULT}
   };
-  map = new google.maps.Map(document.getElementById("map_canvas"),
+
+  map = new google.maps.Map(document.getElementById(options.map_id || "map_canvas"),
       myOptions);
+
   var styledMap = new google.maps.StyledMapType(
       mapStyle);
   map.mapTypes.set('styled', styledMap);
@@ -89,7 +93,7 @@ function MarkerKeeper(map, options) {
   this.activeYear = 2010;
   this.map = map;
   this.useContrast = options.useContrast;
-
+  this.options = options;
 
   this.setYear = function(year, clicked) {
     $("nav.year_selector ul li").removeClass("active");
@@ -109,6 +113,10 @@ function MarkerKeeper(map, options) {
     marker.setMap(this.map);  
     this.markers.push(marker);
     this.markerHash[marker.ident] = true;
+    if (this.options.popInfoBoxFor == marker.ident) {
+      this.markerClicked(map, marker);
+      this.options.popInfoBoxFor = null;
+    }
   };
 
   this.cullAllMarkers = function() {
@@ -208,11 +216,10 @@ function MarkerKeeper(map, options) {
   this.markerClicked = function(map, marker) {
     var self = this;
     boxContent = document.createElement("div");
-    boxContent.style.cssText = "border: 1px solid black;margin-top: 0px; background: black; padding: 5px 10px 10px 10px; border-radius:3px; -moz-border-radius:3px; webkit-border-radius:3px; -moz-box-shadow #000 5px 5px 10px; -webkit-box-shadow #000 5px 5px 10px; box-shadow #000 5px 5px 10px;";
+    boxContent.style.cssText = "border: 1px solid black;margin-top: 0px; background: rgba(0,0,0,0.80); padding: 5px 10px 10px 10px; border-radius:3px; -moz-border-radius:3px; webkit-border-radius:3px; -moz-box-shadow #000 5px 5px 10px; -webkit-box-shadow #000 5px 5px 10px; box-shadow #000 5px 5px 10px;";
 
     $.getJSON('/marker_info/' + marker.ident, function(data, textStatus) {
       infoBox = $("#schoolTemplate").tmpl(data).appendTo($(boxContent));
-
       var averageSerie = {
         name: "Årsresultat",
         data: []
@@ -259,6 +266,13 @@ function MarkerKeeper(map, options) {
       }
 
       var schoolPosition = new google.maps.LatLng(data.location[0],data.location[1]);
+
+      if (self.options.fullscreen) {
+        self.map.panTo(schoolPosition);
+        self.map.panBy(320, 150);
+      } else {
+        self.map.panBy(200, 150);
+      }
       var panoramaOptions = {
         pov: {
           heading: 34,
@@ -473,8 +487,8 @@ mapStyle = [
 
 infoBoxOptions = {
   disableAutoPan: false,
+  infoBoxClearance: 10,
   maxWidth: 0,
-  pixelOffset: new google.maps.Size(-140, 10),
   zIndex: 0,
   boxStyle: {
     opacity: 1,

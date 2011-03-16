@@ -11,5 +11,6 @@
       = link_to "#{@municipality.name} kommune", "/skolene/#{@county.link_name}/#{@municipality.link_name}"
     .address
       = @school.address
-    .map_link
-      = link_to "Se skolen på kartet", "/ll/#{@school.location[0]}/#{@school.location[1]}"
+    #school_map_canvas
+
+= partial :map, :locals => {:map_options => @map_options} if @has_position

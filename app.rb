@@ -5,19 +5,17 @@ KLASSES = ["School", "Municipality"]
 VALID_YEAR_STRINGS = (2008..2010).map(&:to_s)
 
 get '/usecontrast' do
-  @options = { :useContrast => true }
-  @map_page = true
+  @map_options = { :useContrast => true, :fullscreen => true }
   haml :index
 end
 
 get '/ll/:lat/:lon' do |lat, lon|
-  @options = { :ll => [lat.to_f, lon.to_f] }
-  @map_page = true
+  @map_options = { :ll => [lat.to_f, lon.to_f], :fullscreen => true }
   haml :index
 end
 
 get '/' do
-  @map_page = true
+  @map_options = { :fullscreen => true }
   haml :index
 end
 
@@ -50,7 +48,7 @@ get '/get_markers/:lat/:lon/:lat2/:lon2/:year' do |lat, lon, lat2, lon2, year|
   end
   
   result[:objects] = objects.map { |o| {
-    :id => o.class.to_s << "_" << o.id.to_s, 
+    :id => id_for_object(o), 
     :name => o.name,
     :body => o.student_body_count, 
     :avg => o.year_averages[year], 
@@ -104,6 +102,15 @@ get '/skolene/:county/:municipality/:name' do |county, muni, name|
   @municipality = Municipality.by_county(@county).where(:link_name => muni).first
   @school = School.by_municipality(@municipality).where(:link_name => name).first
   @page_title = "for #{@school.name}"
+
+  @has_position = false
+  if @school.location.length == 2
+    @map_options = {
+      :map_id => "school_map_canvas", 
+      :ll => [@school.location[0].to_f, @school.location[1].to_f],
+      :popInfoBoxFor => id_for_object(@school)}
+    @has_position = true
+  end
   haml :school
 end
 
@@ -113,6 +120,14 @@ get '/om' do
 end
 
 helpers do
+  def id_for_object(obj)
+    obj.class.to_s << "_" << obj.id.to_s
+  end
+
+  def partial(page, options={})
+    haml page, options.merge!(:layout => false)
+  end
+
   def link_to(*args)
     case args.length
       when 1 then url = args[0]; text = url.gsub('http://','')
