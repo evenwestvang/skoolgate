@@ -1,14 +1,32 @@
 
-*Skoolgate presents data from Norwegian national school benchmarks.*
+Light weight site for viewing Norwegian national school benchmarks, "Nasjonale Prøver".
 
-.plan:
+Dependencies:
 
-TODO:
-  * Single school views should really use full screen maps
-  * School popups should have links to municipality and county lists
+  * MongoDB
+  * Bundler
+  * Ruby 1.9.2
+  * Thor - for importing data
+
+Repo ships with all the production data dumped to a MongoDB backup. From root just:
+
+@@@@
+mongorestore -d skoolgate_development data/nuskool_development
+thin start
+@@@@
+
+
+Informal list
+
+NEXT:
+  * Single school views should use full screen maps, pushstate, onpopstate and onnavigate hookage
+  * Add school results to county and municipal views using http://tablesorter.com/docs/#Demo. Pretty up.
+  
   
 ISSUES:
-  * Municipalities don't need FB-like buttons, switch to FBJS
+  * Search REs seem to have unicode issues for scandi characters
+
+---
 
 DONE:
   * setup Sinatra-app with MongoDB and Mongoid glue
@@ -38,7 +56,7 @@ DONE:
   * http cache with rack::cache and memcached
   * deploy production environment
 
-v2
+DONE – V2:
   * add new test data
     * rework models
     * rework statistics
@@ -47,8 +65,11 @@ v2
   * run geocoding
   * aggregate results by test type and year for filtering
   * school have links to streetviews. Nice.
-  * view single schools
-  * pretty stuff up
-
+  * view schools for counties, municipalities and single schools
+  * use highcharts for graphing results
+  * add random stats page
+  * Facebook likage
+  * Get searchy
+  
 
   
