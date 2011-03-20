@@ -19,6 +19,15 @@ get '/' do
   haml :index
 end
 
+get '/search' do
+  reg = ""
+  q_regexp = Unicode.downcase(params["term"]).gsub(/([^a-z])/, '').each_char { |c| reg << "#{c}+.?" }
+  schools = School.find(:all, :limit => 100, :conditions => {:name => Regexp.new(reg, Regexp::IGNORECASE)})
+  schools = schools.map do |s|
+    { :id => school_url(s), :text => s.name, :value => "#{s.name} - #{s.municipality.name}" }
+  end.to_json
+end
+
 
 get '/marker_info/:marker_id' do |marker_id|
   content_type 'text/json', :charset => 'utf-8'
@@ -106,7 +115,7 @@ get '/skolene/:county/:municipality/:name' do |county, muni, name|
   @page_title = "for #{@school.name}"
 
   @has_position = false
-  if @school.location.length == 2
+  if @school.location and @school.location.length == 2
     @map_options = {
       :map_id => "school_map_canvas", 
       :ll => [@school.location[0].to_f, @school.location[1].to_f],
@@ -121,9 +130,21 @@ get '/om' do
   haml :about
 end
 
+get '/test' do
+  haml :test, :layout => false
+end
+
 helpers do
   def id_for_object(obj)
     obj.class.to_s << "_" << obj.id.to_s
+  end
+
+  def county_url(county)
+    "/skolene/#{county.link_name}"
+  end
+
+  def municipality_url(muni)
+    "/skolene/#{muni.county.link_name}/#{muni.link_name}"
   end
   
   def school_url(school)

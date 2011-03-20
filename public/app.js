@@ -181,14 +181,13 @@ function MarkerKeeper(map, options) {
 
   this.updateMarkers = function(data) {
     var self = this;
-    
     newDetailLevel = data.detailLevel;
     if (self.detailLevel != newDetailLevel) {
       this.cullAllMarkers();
       if (newDetailLevel == "schools") {
-        $('.header_search_ui').removeClass('less_details');
+        $('#view_stats_container').removeClass('less_details');
       } else {
-        $('.header_search_ui').addClass('less_details');
+        $('#view_stats_container').addClass('less_details');
       }
       self.detailLevel = newDetailLevel;
     }
@@ -200,7 +199,7 @@ function MarkerKeeper(map, options) {
           size = (size / 15) + 10;
         }
         var latlng = new google.maps.LatLng(item.lat, item.lon);
-        var icon_url = ButtonFactory.create(item.avg, size, self.useContrast);
+        var icon_url = MarkerFactory.create(item.avg, size, self.useContrast);
         var image = new google.maps.MarkerImage(icon_url, 
           new google.maps.Size(size, size),
           new google.maps.Point(0, 0),
@@ -224,7 +223,7 @@ function MarkerKeeper(map, options) {
   this.markerClicked = function(map, marker) {
     var self = this;
     boxContent = document.createElement("div");
-    boxContent.style.cssText = "border: 1px solid black;margin-top: 0px; background: rgba(0,0,0,0.80); padding: 5px 10px 5px 10px; border-radius:3px; -moz-border-radius:3px; webkit-border-radius:3px; -moz-box-shadow #000 5px 5px 10px; -webkit-box-shadow #000 5px 5px 10px; box-shadow #000 5px 5px 10px;";
+    boxContent.style.cssText = "border: 1px solid black;margin-top: 0px; background: rgba(0,0,0,0.80); padding: 5px 10px 8px 10px; border-radius:3px; -moz-border-radius:3px; webkit-border-radius:3px; -moz-box-shadow #000 5px 5px 10px; -webkit-box-shadow #000 5px 5px 10px; box-shadow #000 5px 5px 10px;";
 
     $.getJSON('/marker_info/' + marker.ident, function(data, textStatus) {
       data.school_url = encodeURI(data.school_url);
@@ -239,7 +238,7 @@ function MarkerKeeper(map, options) {
         averageDataPoint = {
           x: annual_result.year, 
           y: annual_result.result_average,
-          color: ButtonFactory.getColor(annual_result.result_average, self.useContrast)
+          color: MarkerFactory.getColor(annual_result.result_average, self.useContrast, 10)
         }
         averageSerie.data.push(averageDataPoint);
 
@@ -273,17 +272,16 @@ function MarkerKeeper(map, options) {
         chart = new Highcharts.Chart(resultChartOptions);
 
         if (data.school_url !== undefined) {
-          var like = '<fb:like href="'+data.school_url+'" width="400" height="20" show_faces="false" layout="standard" action="recommend" colorscheme="light"/>'
-          var insert = infoBox.children().last()
-          insert.append(like);
-          FB.XFBML.parse(insert[0]);
-        }
+          setTimeout(function() {
+            var like = '<fb:like href="'+data.school_url+'" width="400" height="20" show_faces="false" layout="standard" action="recommend" colorscheme="dark"/>'
+            var insert = infoBox.children().last()
+            insert.append(like);
+            FB.XFBML.parse(insert[0]);
+        }, 1500)};
       }
-
       var schoolPosition = new google.maps.LatLng(data.location[0],data.location[1]);
 
       self.map.panTo(schoolPosition);
-
       if (self.options.fullscreen) {
         self.map.panBy(320, 150);
       } else {
@@ -355,8 +353,7 @@ function MarkerKeeper(map, options) {
 }
 
 
-
-var ButtonFactory = (function() {
+var MarkerFactory = (function() {
   return new function() {
 
     var h = 1;
@@ -364,26 +361,30 @@ var ButtonFactory = (function() {
     var l = 45;
     var a = 0.75;
 
-    this.getColor = function(val, useContrast) {
+    this.getColor = function(val, useContrast, gamma) {
       if (!useContrast) {
-        return "hsla(" + this.sCurveColor(val) +"," + s + "%," + l +"%," + a +")";
+        return "hsla(" + this.sCurveColor(val, gamma) +"," + s + "%," + l +"%," + a +")";
       } else {
         return "hsla(" + 0 +"," + 0 + "%," + this.sBrightness(val) +"%," + 1 +")";
       }
     };
 
-    this.getColor1 = function(val, useContrast) {
+    this.getColor1 = function(val, useContrast, gamma) {
       if (!useContrast) {
-        return "hsla(" + this.sCurveColor(val) +"," + s + "%," + (l*0.75) +"%," + a +")";
+        return "hsla(" + this.sCurveColor(val, gamma) +"," + s + "%," + (l*0.75) +"%," + a +")";
       } else {
         return "hsla(" + 0 +"," + 0 + "%," + this.sBrightness(val)*0.25 +"%," + 1 +")";
       }
     };
 
-    this.sCurveColor = function(t) {
-      t = t - 0.5;
-      var log_curve = (1 / (1 + Math.pow(Math.E,-t))) - 0.5;
-      var color_val = 40 + (log_curve * 700);
+    this.sCurveColor = function(val, gamma) {
+      val -= 0.5;
+      // var log_curve = (1 / (1 + Math.pow(Math.E,-(t*3))));
+      // var color_val = -30 + (log_curve * 180);
+
+      var log_curve = (1 / (1 + Math.pow(Math.E,-(val*gamma))));
+      var color_val = -00 + (log_curve * 90);
+
       return color_val;
     };
 
@@ -412,7 +413,7 @@ var ButtonFactory = (function() {
       context.closePath();
     };
 
-    this.createCanvas = function(t, size, useContrast) {
+    this.createCanvas = function(t, size, useContrast, gamma) {
       var canvas = document.createElement("canvas");
       canvas.width = size;
       canvas.height = size;
@@ -421,8 +422,8 @@ var ButtonFactory = (function() {
       var boxStroke;
       var colorVal;
       if(t !== 0 && t !== undefined && t != null) {
-        color0 = this.getColor(t, useContrast);
-        boxStroke = this.getColor1(t, useContrast);
+        color0 = this.getColor(t, useContrast, gamma);
+        boxStroke = this.getColor1(t, useContrast, gamma);
       } else {
         color0 = "Silver";
         boxStroke = "rgba(100,100,100,1)";
@@ -436,8 +437,9 @@ var ButtonFactory = (function() {
       return canvas;
     };
 
-    this.create = function(label, range, useContrast) {
-      var canvas = this.createCanvas(label, range, useContrast);
+    this.create = function(label, size, useContrast, gamma) {
+      gamma = gamma || 10
+      var canvas = this.createCanvas(label, size, useContrast, gamma);
       return canvas.toDataURL();
     };
   }();

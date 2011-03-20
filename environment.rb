@@ -5,6 +5,7 @@ require 'sinatra'
 require 'mongoid'
 require 'haml'
 require 'sass'
+require 'unicode'
 require './models'
 require 'rack/cache'
 require 'yajl/json_gem'
@@ -23,9 +24,6 @@ configure :development do
       Mongo::Connection.new(host, 27017, :slave_ok => true).db(name)
     ]
     config.persist_in_safe_mode = false
-
-
-
 
     # use Rack::Cache,
     #   :verbose     => true,
@@ -47,7 +45,7 @@ configure :production do
   end
   
   before do
-    cache_control :public, :max_age => 36000
+    cache_control :public, :max_age => 172800
   end
 
   use Rack::Cache,

@@ -76,7 +76,6 @@ class Massage < Thor
     schools_to_scrape.each_with_index do |s, i|
       puts "Looking for body count at school #{s.name}"
       name = s.name.gsub('Grunnskole', '') # term seems to be deprecated
-      #http://ajax.googleapis.com/ajax/services/search/web?v=1.0&q=Paris%20Hilton&key=INSERT-YOUR-KEY
       url = "http://ajax.googleapis.com/ajax/services/search/web?v=1.0&q=" + CGI.escape("site:skoleporten.utdanningsdirektoratet.no skolefakta -\"Alle skoler med adresse\" \"#{s.municipality}\" #{name} #{s.address}")
       puts "Google: #{url}"
       json = JSON.parse(open(url).read)

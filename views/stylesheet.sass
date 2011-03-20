@@ -2,7 +2,7 @@
 
 $accent: #1af
 $accent_plus: #adf
-$footer: rgba(10,10,10,0.9)
+$footer: rgba(10,10,10,0.8)
 $header: rgba(10,10,10,0.8)
 
 $black: #333
@@ -63,7 +63,7 @@ body
 
     .header_top
       :background-color $header
-      :padding 15px 25px 5px 25px
+      :padding 15px 0px 15px 25px
       .logo
         :display inline-block
         :font-size 28px
@@ -86,18 +86,29 @@ body
         a
           :color white
 
-  .header_search_ui
-    :font-weight normal
-    :padding-top 0
-    :background-color rgba(30,30,30,0.8)
-    :border-top rgba(0,0,0,0.9) 1px solid
+    input
+      @include corners(2px,2px,2px,2px)
+      :background-color #333
+      :border 1px solid #888
+      :padding 3px
+      :color #fff
 
-    #view_stats
-      :color #aaa
-      :padding 5px 8px 7px 25px
+      input::-webkit-input-placeholder
+        :color #f00
+
+    #school_search
+      :width 75%
     
-  .header_search_ui.less_details
-    :background-color rgba(80,30,30,0.8)
+  .ui-autocomplete-loading 
+    :background-image url('ui-anim_basic_16x16.gif') right center no-repeat
+
+  .ui-autocomplete
+    :max-height 250px
+    :overflow-y auto
+    :overflow-x hidden
+    :padding-right 20px
+
+
 
   .school_infobox
     h2
@@ -199,7 +210,7 @@ body
     :height 420px
 
 
-#container.no_map .header_search_ui
+#container.no_map #view_stats_container
   :display none
 
 #container.map footer
@@ -208,13 +219,30 @@ body
   :left 0
 
 footer
+
+  #view_stats_container
+    :background-color $footer
+    :font-weight normal
+    :padding 8px 15px 5px 25px
+    :display inline-block
+    :color $lite
+
+  #view_stats_container.less_details
+    :background-color rgba(120,30,30,0.8)
+    :color #f00
+    :weight 700
+    :font-size 12pt
+
   @include list_as_nav
-  :background-color $footer
-  :color $lite
-  :padding 0px 10px 0px 35px
-  :margin 20px 0px 10px 0px
-  :clear both
-  :display block
+
+
+  ul
+    :background-color $footer
+    :color $lite
+    :clear both
+    :display block
+    :padding 5px 10px 5px 25px
+    :margin 0px
 
   a
     :color darken($lite, 10)
@@ -227,4 +255,5 @@ footer
     a, a:link
       :padding-left 20px
       :background url(/tweet_bird.png) no-repeat 0px -1px
+
 

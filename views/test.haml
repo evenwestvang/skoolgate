@@ -1,0 +1,28 @@
+%script{:type => "text/javascript",
+  :src  => "/jquery_min.js"}
+%script{:type => "text/javascript",
+  :src  => "http://maps.google.com/maps/api/js?sensor=false"}
+%script{:type => "text/javascript",
+  :src  => "http://ajax.googleapis.com/ajax/libs/chrome-frame/1/CFInstall.min.js"}
+%script{:src =>'/app.js'}
+
+
+#grid
+  
+:css
+  body { background-color: #333; }
+  img { padding: 1px 1px 0px 0px; }
+
+:javascript
+  console.info("Markers!");
+  for(var i = 0; i < 30; i++) {
+    var row = document.createElement("div");
+    $(row).appendTo('#grid');
+    for(var j = 0; j < 30; j++) {
+      console.info((j+1)/30);
+      var img = document.createElement("img");
+      img.src = MarkerFactory.create((j+1)/30,20, false, i+2);
+      $(img).appendTo(row);
+    }
+  }
+

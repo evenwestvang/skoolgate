@@ -8,11 +8,6 @@
       - @counties.each do |county| 
         %dt= link_to county.name, "/skolene/#{county.link_name}"
         %dd
-          %dl
+          %ul
             - county.municipalities.order_by(:name.asc).each do |municipality|
-              %dt= link_to municipality.name, "/skolene/#{municipality.county.link_name}/#{municipality.link_name}"
-              %dd
-                %dl
-                  %ul
-                    - municipality.schools.each do |school|
-                      %li= link_to school.name, "/skolene/#{school.county.link_name}/#{school.municipality.link_name}/#{school.link_name}"
+              %li= link_to municipality.name, "/skolene/#{municipality.county.link_name}/#{municipality.link_name}"

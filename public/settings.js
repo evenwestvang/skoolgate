@@ -6,7 +6,7 @@ resultChartOptions = {
      // defaultSeriesType: 'line',
      defaultSeriesType: 'column',
      marginRight: 160,
-     marginBottom: 35,
+     marginBottom: 25,
      width: 400,
      height: 180
   },

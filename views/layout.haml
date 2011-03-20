@@ -15,9 +15,8 @@
       %meta{:property => "og:site_name", :content => "skoleporten.bengler.no"}
       %meta{:property => "fb:app_id", :content => "137325976336227"}
 
-
-
     %link{:href => '/stylesheet.css', :media => 'screen', :rel => 'stylesheet', :type => 'text/css'}/
+    %link{:href => '/jquery-ui-1.8.11.custom.css', :media => 'screen', :rel => 'stylesheet', :type => 'text/css'}/
     %link{'rel' => 'shortcut icon', 'href' => '/favicon.png'}
     - if @map_options
       %script{:type => "text/javascript",
@@ -25,11 +24,13 @@
       %script{:type => "text/javascript",
         :src  => "http://ajax.googleapis.com/ajax/libs/chrome-frame/1/CFInstall.min.js"}
       %script{:type => "text/javascript",
-        :src  => "/app.js"}
-      %script{:type => "text/javascript",
         :src  => "/maps_infobox.js"}
     %script{:type => "text/javascript",
+      :src  => "/app.js"}
+    %script{:type => "text/javascript",
       :src  => "/jquery_min.js"}
+    %script{:type => "text/javascript",
+      :src  => "/jquery-ui-1.8.11.custom.min.js"}
     %script{:type => "text/javascript",
       :src  => "/highcharts.js"}
     %script{:type => "text/javascript",
@@ -44,7 +45,20 @@
         ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
+
+      $(document).ready(function() {
+        $("#school_search").autocomplete({
+          source: "/search",
+          minLength: 2,
+          select: function( event, ui ) {
+            console.info( ui.item ?
+              window.location = ui.item.id :
+              "Nothing selected, input was " + this.value );
+            }
+        });
+      });
   %body
+
     #container{:class => (@map_options || {})[:fullscreen] ? "map" : "no_map" }
       #map_canvas
       %header{:style => "background-color: hsla(1,1,1,1);"}
@@ -70,11 +84,12 @@
               %li#2010_link.active
                 = link_to("2010", "#")
 
-        .header_search_ui
-          #view_stats
-            &nbsp;
+          %input#school_search.ui-autocomplete-input{:placeholder => "SØK ETTER SKOLER", :autocomplete => "off",  :role => "textbox", "aria-autocomplete" => "list", "aria-haspopup" => "true"}
       = yield
       %footer
+        #view_stats_container
+          #view_stats
+            &nbsp;
         %ul
           %li.muted
             skoleporten.bengler.no er et 
