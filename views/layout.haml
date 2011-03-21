@@ -51,10 +51,10 @@
           source: "/search",
           minLength: 2,
           select: function( event, ui ) {
-            console.info( ui.item ?
-              window.location = ui.item.id :
-              "Nothing selected, input was " + this.value );
+            if (ui.item) {
+              window.location = ui.item.id;
             }
+          }
         });
       });
   %body
