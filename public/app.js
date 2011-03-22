@@ -363,7 +363,8 @@ var MarkerFactory = (function() {
 
     this.getColor = function(val, useContrast, gamma) {
       if (!useContrast) {
-        return "hsla(" + this.sCurveColor(val, gamma) +"," + s + "%," + l +"%," + a +")";
+        col = hslToRgb(this.sCurveColor(val, gamma)/360, s/100, l/100);
+        return "rgba(" + col[0].toFixed(0) + "," + col[1].toFixed(0) + "," + col[2].toFixed(0) + "," + a + ")"
       } else {
         return "hsla(" + 0 +"," + 0 + "%," + this.sBrightness(val) +"%," + 1 +")";
       }
@@ -371,7 +372,8 @@ var MarkerFactory = (function() {
 
     this.getColor1 = function(val, useContrast, gamma) {
       if (!useContrast) {
-        return "hsla(" + this.sCurveColor(val, gamma) +"," + s + "%," + (l*0.75) +"%," + a +")";
+        col = hslToRgb(this.sCurveColor(val, gamma)/360, s/100, l/100*0.75);
+        return "rgba(" + col[0].toFixed(0) + "," + col[1].toFixed(0) + "," + col[2].toFixed(0) + "," + a + ")"
       } else {
         return "hsla(" + 0 +"," + 0 + "%," + this.sBrightness(val)*0.25 +"%," + 1 +")";
       }
