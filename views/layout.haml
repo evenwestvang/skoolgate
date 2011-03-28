@@ -4,8 +4,7 @@
     :javascript
       var _sf_startpt=(new Date()).getTime()
     %title
-      Nasjonale prøver
-      = " #{@page_title}" if @page_title
+      = "Nasjonale prøver #{@page_title || ""}"
     %meta{'http-equiv' => 'Content-Type', :content => 'text/html', :charset => 'utf-8'}/
     %meta{'http-equiv' => 'X-UA-Compatible', :content=>'chrome=1'}/
     - if false
