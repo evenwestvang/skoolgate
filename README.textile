@@ -1,5 +1,5 @@
 
-Light weight site for viewing Norwegian national school benchmarks, "Nasjonale Prøver".
+AJAX heavy Mini site for viewing Norwegian national school benchmarks, "Nasjonale Prøver".
 
 Dependencies:
 
@@ -8,20 +8,21 @@ Dependencies:
   * Ruby 1.9.2
   * Thor - for importing data
 
-Repo ships with all the production data dumped to a MongoDB backup. From root just:
+Repo ships with all the production data dumped to a MongoDB backup. From project root just do:
 
 @@@@
-mongorestore -d skoolgate_development data/nuskool_development
+mongorestore data/nuskool_development
 thin start
 @@@@
 
 
-Informal list
+TODO
 
-NEXT:
+  * Return 404 instad of 500 on when looking up nonexistant schools
+  * Fix ≈ 200 schools missing location
+  * Show data for single schools even if we don't have their location
   * Single school views should use full screen maps, pushstate, onpopstate and onnavigate hookage
-  * Add school results to county and municipal views using http://tablesorter.com/docs/#Demo. Pretty up.
-  
+  * Add school results to county and municipal views, perhaps using http://tablesorter.com/docs/#Demo. Pretty up.
   
 ISSUES:
   * Search REs seem to have unicode issues for scandi characters
