@@ -1,4 +1,4 @@
-Wee little AJAXy site for viewing "Nasjonale Prøver", the Norwegian national school benchmarks.
+Single purpose site for viewing results from "Nasjonale Prøver", the Norwegian national school benchmarks.
 
 Deps:
 
