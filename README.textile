@@ -8,7 +8,7 @@ Deps:
 Repo ships with all the production data dumped to a MongoDB backup. From project root just do:
 
 <pre>
-bundle && mongorestore data/nuskool_development && thin start
+bundle && mongorestore ./data/nuskool_development && thin start
 </pre>
 
 TODO
