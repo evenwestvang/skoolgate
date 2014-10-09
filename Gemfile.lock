@@ -1,12 +1,5 @@
-GIT
-  remote: git@github.com:evenwestvang/geokit-gem.git
-  revision: 0d70f0e74d6d7db0644274426f6c83c1d6874400
-  specs:
-    geokit (1.5.0)
-
 GEM
   remote: http://rubygems.org/
-  remote: http://gemcutter.org/
   specs:
     activemodel (3.0.5)
       activesupport (= 3.0.5)
@@ -22,6 +15,7 @@ GEM
     eventmachine (0.12.10)
     haml (3.0.25)
     i18n (0.5.0)
+    kgio (2.9.2)
     memcache-client (1.8.5)
     mongo (1.2.4)
       bson (>= 1.2.4)
@@ -34,6 +28,7 @@ GEM
     rack (1.2.1)
     rack-cache (1.0)
       rack (>= 0.4)
+    raindrops (0.13.0)
     sass (3.1.0.alpha.221)
     sinatra (1.2.0)
       rack (~> 1.1)
@@ -45,6 +40,10 @@ GEM
     tilt (1.2.2)
     tzinfo (0.3.24)
     unicode (0.4.0)
+    unicorn (4.8.3)
+      kgio (~> 2.6)
+      rack
+      raindrops (~> 0.7)
     will_paginate (3.0.pre2)
     yajl-ruby (0.8.1)
 
@@ -55,7 +54,6 @@ DEPENDENCIES
   amatch
   bson_ext
   dalli
-  geokit!
   haml
   i18n
   memcache-client
@@ -67,4 +65,5 @@ DEPENDENCIES
   sinatra
   thin
   unicode
+  unicorn
   yajl-ruby

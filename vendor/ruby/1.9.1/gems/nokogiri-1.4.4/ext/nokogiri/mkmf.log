@@ -1,0 +1,457 @@
+find_header: checking for libxml/parser.h... -------------------- yes
+
+"gcc -o conftest -I/usr/include/ruby-1.9.1/x86_64-linux -I/usr/include/ruby-1.9.1/ruby/backward -I/usr/include/ruby-1.9.1 -I. -I/opt/local/include/libxml2 -I/usr/local/include/libxml2 -I/opt/local/include -I/usr/local/include -I/usr/include -I/usr/include -I/usr/include/libxml2 -D_FORTIFY_SOURCE=2  -D_FORTIFY_SOURCE=2 -O2 -pipe -march=native -w  -g -DXP_UNIX -O3 -Wall -Wcast-qual -Wwrite-strings -Wconversion -Wmissing-noreturn -Winline conftest.c  -L. -L/usr/lib -L/opt/local/lib -L/usr/local/lib -L/usr/lib -L. -Wl,-Bsymbolic-functions -Wl,-z,relro -L/build/buildd/ruby1.9.1-1.9.3.484/debian/lib -rdynamic -Wl,-export-dynamic     -lruby-1.9.1  -lpthread -lrt -ldl -lcrypt -lm   -lc "
+checked program was:
+/* begin */
+1: #include "ruby.h"
+2: 
+3: int main(int argc, char **argv)
+4: {
+5:   return 0;
+6: }
+/* end */
+
+"gcc -E -I/usr/include/ruby-1.9.1/x86_64-linux -I/usr/include/ruby-1.9.1/ruby/backward -I/usr/include/ruby-1.9.1 -I. -I/opt/local/include/libxml2 -I/usr/local/include/libxml2 -I/opt/local/include -I/usr/local/include -I/usr/include -I/usr/include -I/usr/include/libxml2 -D_FORTIFY_SOURCE=2  -D_FORTIFY_SOURCE=2 -O2 -pipe -march=native -w  -g -DXP_UNIX -O3 -Wall -Wcast-qual -Wwrite-strings -Wconversion -Wmissing-noreturn -Winline  conftest.c -o conftest.i"
+checked program was:
+/* begin */
+1: #include "ruby.h"
+2: 
+3: #include <libxml/parser.h>
+/* end */
+
+--------------------
+
+find_header: checking for libxslt/xslt.h... -------------------- yes
+
+"gcc -E -I/usr/include/ruby-1.9.1/x86_64-linux -I/usr/include/ruby-1.9.1/ruby/backward -I/usr/include/ruby-1.9.1 -I. -I/opt/local/include/libxml2 -I/usr/local/include/libxml2 -I/opt/local/include -I/usr/local/include -I/usr/include -I/usr/include -I/usr/include/libxml2 -D_FORTIFY_SOURCE=2  -D_FORTIFY_SOURCE=2 -O2 -pipe -march=native -w  -g -DXP_UNIX -O3 -Wall -Wcast-qual -Wwrite-strings -Wconversion -Wmissing-noreturn -Winline  conftest.c -o conftest.i"
+checked program was:
+/* begin */
+1: #include "ruby.h"
+2: 
+3: #include <libxslt/xslt.h>
+/* end */
+
+--------------------
+
+find_header: checking for libexslt/exslt.h... -------------------- yes
+
+"gcc -E -I/usr/include/ruby-1.9.1/x86_64-linux -I/usr/include/ruby-1.9.1/ruby/backward -I/usr/include/ruby-1.9.1 -I. -I/opt/local/include/libxml2 -I/usr/local/include/libxml2 -I/opt/local/include -I/usr/local/include -I/usr/include -I/usr/include -I/usr/include/libxml2 -D_FORTIFY_SOURCE=2  -D_FORTIFY_SOURCE=2 -O2 -pipe -march=native -w  -g -DXP_UNIX -O3 -Wall -Wcast-qual -Wwrite-strings -Wconversion -Wmissing-noreturn -Winline  conftest.c -o conftest.i"
+checked program was:
+/* begin */
+1: #include "ruby.h"
+2: 
+3: #include <libexslt/exslt.h>
+/* end */
+
+--------------------
+
+have_func: checking for iconv_open() in iconv.h... -------------------- yes
+
+"gcc -o conftest -I/usr/include/ruby-1.9.1/x86_64-linux -I/usr/include/ruby-1.9.1/ruby/backward -I/usr/include/ruby-1.9.1 -I. -I/opt/local/include/libxml2 -I/usr/local/include/libxml2 -I/opt/local/include -I/usr/local/include -I/usr/include -I/usr/include -I/usr/include/libxml2 -D_FORTIFY_SOURCE=2  -D_FORTIFY_SOURCE=2 -O2 -pipe -march=native -w  -g -DXP_UNIX -O3 -Wall -Wcast-qual -Wwrite-strings -Wconversion -Wmissing-noreturn -Winline conftest.c  -L. -L/usr/lib -L/opt/local/lib -L/usr/local/lib -L/usr/lib -L. -Wl,-Bsymbolic-functions -Wl,-z,relro -L/build/buildd/ruby1.9.1-1.9.3.484/debian/lib -rdynamic -Wl,-export-dynamic     -lruby-1.9.1  -lpthread -lrt -ldl -lcrypt -lm   -lc "
+checked program was:
+/* begin */
+ 1: #include "ruby.h"
+ 2: 
+ 3: #include <iconv.h>
+ 4: 
+ 5: /*top*/
+ 6: int t() { void ((*volatile p)()); p = (void ((*)()))iconv_open; return 0; }
+ 7: int main(int argc, char **argv)
+ 8: {
+ 9:   if (argc > 1000000) {
+10:     printf("%p", &t);
+11:   }
+12: 
+13:   return 0;
+14: }
+/* end */
+
+--------------------
+
+find_library: checking for xmlParseDoc() in -lxml2... -------------------- yes
+
+"gcc -o conftest -I/usr/include/ruby-1.9.1/x86_64-linux -I/usr/include/ruby-1.9.1/ruby/backward -I/usr/include/ruby-1.9.1 -I. -I/opt/local/include/libxml2 -I/usr/local/include/libxml2 -I/opt/local/include -I/usr/local/include -I/usr/include -I/usr/include -I/usr/include/libxml2 -D_FORTIFY_SOURCE=2  -D_FORTIFY_SOURCE=2 -O2 -pipe -march=native -w  -g -DXP_UNIX -O3 -Wall -Wcast-qual -Wwrite-strings -Wconversion -Wmissing-noreturn -Winline conftest.c  -L. -L/usr/lib -L/opt/local/lib -L/usr/local/lib -L/usr/lib -L. -Wl,-Bsymbolic-functions -Wl,-z,relro -L/build/buildd/ruby1.9.1-1.9.3.484/debian/lib -rdynamic -Wl,-export-dynamic     -lruby-1.9.1 -lxml2  -lpthread -lrt -ldl -lcrypt -lm   -lc "
+conftest.c: In function ‘t’:
+conftest.c:4:53: error: ‘xmlParseDoc’ undeclared (first use in this function)
+ int t() { void ((*volatile p)()); p = (void ((*)()))xmlParseDoc; return 0; }
+                                                     ^
+conftest.c:4:53: note: each undeclared identifier is reported only once for each function it appears in
+checked program was:
+/* begin */
+ 1: #include "ruby.h"
+ 2: 
+ 3: /*top*/
+ 4: int t() { void ((*volatile p)()); p = (void ((*)()))xmlParseDoc; return 0; }
+ 5: int main(int argc, char **argv)
+ 6: {
+ 7:   if (argc > 1000000) {
+ 8:     printf("%p", &t);
+ 9:   }
+10: 
+11:   return 0;
+12: }
+/* end */
+
+"gcc -o conftest -I/usr/include/ruby-1.9.1/x86_64-linux -I/usr/include/ruby-1.9.1/ruby/backward -I/usr/include/ruby-1.9.1 -I. -I/opt/local/include/libxml2 -I/usr/local/include/libxml2 -I/opt/local/include -I/usr/local/include -I/usr/include -I/usr/include -I/usr/include/libxml2 -D_FORTIFY_SOURCE=2  -D_FORTIFY_SOURCE=2 -O2 -pipe -march=native -w  -g -DXP_UNIX -O3 -Wall -Wcast-qual -Wwrite-strings -Wconversion -Wmissing-noreturn -Winline conftest.c  -L. -L/usr/lib -L/opt/local/lib -L/usr/local/lib -L/usr/lib -L. -Wl,-Bsymbolic-functions -Wl,-z,relro -L/build/buildd/ruby1.9.1-1.9.3.484/debian/lib -rdynamic -Wl,-export-dynamic     -lruby-1.9.1 -lxml2  -lpthread -lrt -ldl -lcrypt -lm   -lc "
+checked program was:
+/* begin */
+ 1: #include "ruby.h"
+ 2: 
+ 3: /*top*/
+ 4: int t() { xmlParseDoc(); return 0; }
+ 5: int main(int argc, char **argv)
+ 6: {
+ 7:   if (argc > 1000000) {
+ 8:     printf("%p", &t);
+ 9:   }
+10: 
+11:   return 0;
+12: }
+/* end */
+
+--------------------
+
+find_library: checking for xsltParseStylesheetDoc() in -lxslt... -------------------- yes
+
+"gcc -o conftest -I/usr/include/ruby-1.9.1/x86_64-linux -I/usr/include/ruby-1.9.1/ruby/backward -I/usr/include/ruby-1.9.1 -I. -I/opt/local/include/libxml2 -I/usr/local/include/libxml2 -I/opt/local/include -I/usr/local/include -I/usr/include -I/usr/include -I/usr/include/libxml2 -D_FORTIFY_SOURCE=2  -D_FORTIFY_SOURCE=2 -O2 -pipe -march=native -w  -g -DXP_UNIX -O3 -Wall -Wcast-qual -Wwrite-strings -Wconversion -Wmissing-noreturn -Winline conftest.c  -L. -L/usr/lib -L/opt/local/lib -L/usr/local/lib -L/usr/lib -L. -Wl,-Bsymbolic-functions -Wl,-z,relro -L/build/buildd/ruby1.9.1-1.9.3.484/debian/lib -rdynamic -Wl,-export-dynamic    -lxml2  -lruby-1.9.1 -lxslt -lxml2  -lpthread -lrt -ldl -lcrypt -lm   -lc "
+conftest.c: In function ‘t’:
+conftest.c:4:53: error: ‘xsltParseStylesheetDoc’ undeclared (first use in this function)
+ int t() { void ((*volatile p)()); p = (void ((*)()))xsltParseStylesheetDoc; return 0; }
+                                                     ^
+conftest.c:4:53: note: each undeclared identifier is reported only once for each function it appears in
+checked program was:
+/* begin */
+ 1: #include "ruby.h"
+ 2: 
+ 3: /*top*/
+ 4: int t() { void ((*volatile p)()); p = (void ((*)()))xsltParseStylesheetDoc; return 0; }
+ 5: int main(int argc, char **argv)
+ 6: {
+ 7:   if (argc > 1000000) {
+ 8:     printf("%p", &t);
+ 9:   }
+10: 
+11:   return 0;
+12: }
+/* end */
+
+"gcc -o conftest -I/usr/include/ruby-1.9.1/x86_64-linux -I/usr/include/ruby-1.9.1/ruby/backward -I/usr/include/ruby-1.9.1 -I. -I/opt/local/include/libxml2 -I/usr/local/include/libxml2 -I/opt/local/include -I/usr/local/include -I/usr/include -I/usr/include -I/usr/include/libxml2 -D_FORTIFY_SOURCE=2  -D_FORTIFY_SOURCE=2 -O2 -pipe -march=native -w  -g -DXP_UNIX -O3 -Wall -Wcast-qual -Wwrite-strings -Wconversion -Wmissing-noreturn -Winline conftest.c  -L. -L/usr/lib -L/opt/local/lib -L/usr/local/lib -L/usr/lib -L. -Wl,-Bsymbolic-functions -Wl,-z,relro -L/build/buildd/ruby1.9.1-1.9.3.484/debian/lib -rdynamic -Wl,-export-dynamic    -lxml2  -lruby-1.9.1 -lxslt -lxml2  -lpthread -lrt -ldl -lcrypt -lm   -lc "
+checked program was:
+/* begin */
+ 1: #include "ruby.h"
+ 2: 
+ 3: /*top*/
+ 4: int t() { xsltParseStylesheetDoc(); return 0; }
+ 5: int main(int argc, char **argv)
+ 6: {
+ 7:   if (argc > 1000000) {
+ 8:     printf("%p", &t);
+ 9:   }
+10: 
+11:   return 0;
+12: }
+/* end */
+
+--------------------
+
+find_library: checking for exsltFuncRegister() in -lexslt... -------------------- yes
+
+"gcc -o conftest -I/usr/include/ruby-1.9.1/x86_64-linux -I/usr/include/ruby-1.9.1/ruby/backward -I/usr/include/ruby-1.9.1 -I. -I/opt/local/include/libxml2 -I/usr/local/include/libxml2 -I/opt/local/include -I/usr/local/include -I/usr/include -I/usr/include -I/usr/include/libxml2 -D_FORTIFY_SOURCE=2  -D_FORTIFY_SOURCE=2 -O2 -pipe -march=native -w  -g -DXP_UNIX -O3 -Wall -Wcast-qual -Wwrite-strings -Wconversion -Wmissing-noreturn -Winline conftest.c  -L. -L/usr/lib -L/opt/local/lib -L/usr/local/lib -L/usr/lib -L. -Wl,-Bsymbolic-functions -Wl,-z,relro -L/build/buildd/ruby1.9.1-1.9.3.484/debian/lib -rdynamic -Wl,-export-dynamic    -lxslt -lxml2  -lruby-1.9.1 -lexslt -lxslt -lxml2  -lpthread -lrt -ldl -lcrypt -lm   -lc "
+conftest.c: In function ‘t’:
+conftest.c:4:53: error: ‘exsltFuncRegister’ undeclared (first use in this function)
+ int t() { void ((*volatile p)()); p = (void ((*)()))exsltFuncRegister; return 0; }
+                                                     ^
+conftest.c:4:53: note: each undeclared identifier is reported only once for each function it appears in
+checked program was:
+/* begin */
+ 1: #include "ruby.h"
+ 2: 
+ 3: /*top*/
+ 4: int t() { void ((*volatile p)()); p = (void ((*)()))exsltFuncRegister; return 0; }
+ 5: int main(int argc, char **argv)
+ 6: {
+ 7:   if (argc > 1000000) {
+ 8:     printf("%p", &t);
+ 9:   }
+10: 
+11:   return 0;
+12: }
+/* end */
+
+"gcc -o conftest -I/usr/include/ruby-1.9.1/x86_64-linux -I/usr/include/ruby-1.9.1/ruby/backward -I/usr/include/ruby-1.9.1 -I. -I/opt/local/include/libxml2 -I/usr/local/include/libxml2 -I/opt/local/include -I/usr/local/include -I/usr/include -I/usr/include -I/usr/include/libxml2 -D_FORTIFY_SOURCE=2  -D_FORTIFY_SOURCE=2 -O2 -pipe -march=native -w  -g -DXP_UNIX -O3 -Wall -Wcast-qual -Wwrite-strings -Wconversion -Wmissing-noreturn -Winline conftest.c  -L. -L/usr/lib -L/opt/local/lib -L/usr/local/lib -L/usr/lib -L. -Wl,-Bsymbolic-functions -Wl,-z,relro -L/build/buildd/ruby1.9.1-1.9.3.484/debian/lib -rdynamic -Wl,-export-dynamic    -lxslt -lxml2  -lruby-1.9.1 -lexslt -lxslt -lxml2  -lpthread -lrt -ldl -lcrypt -lm   -lc "
+checked program was:
+/* begin */
+ 1: #include "ruby.h"
+ 2: 
+ 3: /*top*/
+ 4: int t() { exsltFuncRegister(); return 0; }
+ 5: int main(int argc, char **argv)
+ 6: {
+ 7:   if (argc > 1000000) {
+ 8:     printf("%p", &t);
+ 9:   }
+10: 
+11:   return 0;
+12: }
+/* end */
+
+--------------------
+
+have_func: checking for xmlFirstElementChild()... -------------------- yes
+
+"gcc -o conftest -I/usr/include/ruby-1.9.1/x86_64-linux -I/usr/include/ruby-1.9.1/ruby/backward -I/usr/include/ruby-1.9.1 -I. -I/opt/local/include/libxml2 -I/usr/local/include/libxml2 -I/opt/local/include -I/usr/local/include -I/usr/include -I/usr/include -I/usr/include/libxml2 -D_FORTIFY_SOURCE=2  -D_FORTIFY_SOURCE=2 -O2 -pipe -march=native -w  -g -DXP_UNIX -O3 -Wall -Wcast-qual -Wwrite-strings -Wconversion -Wmissing-noreturn -Winline conftest.c  -L. -L/usr/lib -L/opt/local/lib -L/usr/local/lib -L/usr/lib -L. -Wl,-Bsymbolic-functions -Wl,-z,relro -L/build/buildd/ruby1.9.1-1.9.3.484/debian/lib -rdynamic -Wl,-export-dynamic    -lexslt -lxslt -lxml2  -lruby-1.9.1 -lexslt -lxslt -lxml2  -lpthread -lrt -ldl -lcrypt -lm   -lc "
+conftest.c: In function ‘t’:
+conftest.c:4:53: error: ‘xmlFirstElementChild’ undeclared (first use in this function)
+ int t() { void ((*volatile p)()); p = (void ((*)()))xmlFirstElementChild; return 0; }
+                                                     ^
+conftest.c:4:53: note: each undeclared identifier is reported only once for each function it appears in
+checked program was:
+/* begin */
+ 1: #include "ruby.h"
+ 2: 
+ 3: /*top*/
+ 4: int t() { void ((*volatile p)()); p = (void ((*)()))xmlFirstElementChild; return 0; }
+ 5: int main(int argc, char **argv)
+ 6: {
+ 7:   if (argc > 1000000) {
+ 8:     printf("%p", &t);
+ 9:   }
+10: 
+11:   return 0;
+12: }
+/* end */
+
+"gcc -o conftest -I/usr/include/ruby-1.9.1/x86_64-linux -I/usr/include/ruby-1.9.1/ruby/backward -I/usr/include/ruby-1.9.1 -I. -I/opt/local/include/libxml2 -I/usr/local/include/libxml2 -I/opt/local/include -I/usr/local/include -I/usr/include -I/usr/include -I/usr/include/libxml2 -D_FORTIFY_SOURCE=2  -D_FORTIFY_SOURCE=2 -O2 -pipe -march=native -w  -g -DXP_UNIX -O3 -Wall -Wcast-qual -Wwrite-strings -Wconversion -Wmissing-noreturn -Winline conftest.c  -L. -L/usr/lib -L/opt/local/lib -L/usr/local/lib -L/usr/lib -L. -Wl,-Bsymbolic-functions -Wl,-z,relro -L/build/buildd/ruby1.9.1-1.9.3.484/debian/lib -rdynamic -Wl,-export-dynamic    -lexslt -lxslt -lxml2  -lruby-1.9.1 -lexslt -lxslt -lxml2  -lpthread -lrt -ldl -lcrypt -lm   -lc "
+checked program was:
+/* begin */
+ 1: #include "ruby.h"
+ 2: 
+ 3: /*top*/
+ 4: int t() { xmlFirstElementChild(); return 0; }
+ 5: int main(int argc, char **argv)
+ 6: {
+ 7:   if (argc > 1000000) {
+ 8:     printf("%p", &t);
+ 9:   }
+10: 
+11:   return 0;
+12: }
+/* end */
+
+--------------------
+
+have_func: checking for xmlRelaxNGSetParserStructuredErrors()... -------------------- yes
+
+"gcc -o conftest -I/usr/include/ruby-1.9.1/x86_64-linux -I/usr/include/ruby-1.9.1/ruby/backward -I/usr/include/ruby-1.9.1 -I. -I/opt/local/include/libxml2 -I/usr/local/include/libxml2 -I/opt/local/include -I/usr/local/include -I/usr/include -I/usr/include -I/usr/include/libxml2 -D_FORTIFY_SOURCE=2  -D_FORTIFY_SOURCE=2 -O2 -pipe -march=native -w  -g -DXP_UNIX -O3 -Wall -Wcast-qual -Wwrite-strings -Wconversion -Wmissing-noreturn -Winline conftest.c  -L. -L/usr/lib -L/opt/local/lib -L/usr/local/lib -L/usr/lib -L. -Wl,-Bsymbolic-functions -Wl,-z,relro -L/build/buildd/ruby1.9.1-1.9.3.484/debian/lib -rdynamic -Wl,-export-dynamic    -lexslt -lxslt -lxml2  -lruby-1.9.1 -lexslt -lxslt -lxml2  -lpthread -lrt -ldl -lcrypt -lm   -lc "
+conftest.c: In function ‘t’:
+conftest.c:4:53: error: ‘xmlRelaxNGSetParserStructuredErrors’ undeclared (first use in this function)
+ int t() { void ((*volatile p)()); p = (void ((*)()))xmlRelaxNGSetParserStructuredErrors; return 0; }
+                                                     ^
+conftest.c:4:53: note: each undeclared identifier is reported only once for each function it appears in
+checked program was:
+/* begin */
+ 1: #include "ruby.h"
+ 2: 
+ 3: /*top*/
+ 4: int t() { void ((*volatile p)()); p = (void ((*)()))xmlRelaxNGSetParserStructuredErrors; return 0; }
+ 5: int main(int argc, char **argv)
+ 6: {
+ 7:   if (argc > 1000000) {
+ 8:     printf("%p", &t);
+ 9:   }
+10: 
+11:   return 0;
+12: }
+/* end */
+
+"gcc -o conftest -I/usr/include/ruby-1.9.1/x86_64-linux -I/usr/include/ruby-1.9.1/ruby/backward -I/usr/include/ruby-1.9.1 -I. -I/opt/local/include/libxml2 -I/usr/local/include/libxml2 -I/opt/local/include -I/usr/local/include -I/usr/include -I/usr/include -I/usr/include/libxml2 -D_FORTIFY_SOURCE=2  -D_FORTIFY_SOURCE=2 -O2 -pipe -march=native -w  -g -DXP_UNIX -O3 -Wall -Wcast-qual -Wwrite-strings -Wconversion -Wmissing-noreturn -Winline conftest.c  -L. -L/usr/lib -L/opt/local/lib -L/usr/local/lib -L/usr/lib -L. -Wl,-Bsymbolic-functions -Wl,-z,relro -L/build/buildd/ruby1.9.1-1.9.3.484/debian/lib -rdynamic -Wl,-export-dynamic    -lexslt -lxslt -lxml2  -lruby-1.9.1 -lexslt -lxslt -lxml2  -lpthread -lrt -ldl -lcrypt -lm   -lc "
+checked program was:
+/* begin */
+ 1: #include "ruby.h"
+ 2: 
+ 3: /*top*/
+ 4: int t() { xmlRelaxNGSetParserStructuredErrors(); return 0; }
+ 5: int main(int argc, char **argv)
+ 6: {
+ 7:   if (argc > 1000000) {
+ 8:     printf("%p", &t);
+ 9:   }
+10: 
+11:   return 0;
+12: }
+/* end */
+
+--------------------
+
+have_func: checking for xmlRelaxNGSetParserStructuredErrors()... -------------------- yes
+
+"gcc -o conftest -I/usr/include/ruby-1.9.1/x86_64-linux -I/usr/include/ruby-1.9.1/ruby/backward -I/usr/include/ruby-1.9.1 -I. -I/opt/local/include/libxml2 -I/usr/local/include/libxml2 -I/opt/local/include -I/usr/local/include -I/usr/include -I/usr/include -I/usr/include/libxml2 -D_FORTIFY_SOURCE=2  -D_FORTIFY_SOURCE=2 -O2 -pipe -march=native -w  -g -DXP_UNIX -O3 -Wall -Wcast-qual -Wwrite-strings -Wconversion -Wmissing-noreturn -Winline conftest.c  -L. -L/usr/lib -L/opt/local/lib -L/usr/local/lib -L/usr/lib -L. -Wl,-Bsymbolic-functions -Wl,-z,relro -L/build/buildd/ruby1.9.1-1.9.3.484/debian/lib -rdynamic -Wl,-export-dynamic    -lexslt -lxslt -lxml2  -lruby-1.9.1 -lexslt -lxslt -lxml2  -lpthread -lrt -ldl -lcrypt -lm   -lc "
+conftest.c: In function ‘t’:
+conftest.c:4:53: error: ‘xmlRelaxNGSetParserStructuredErrors’ undeclared (first use in this function)
+ int t() { void ((*volatile p)()); p = (void ((*)()))xmlRelaxNGSetParserStructuredErrors; return 0; }
+                                                     ^
+conftest.c:4:53: note: each undeclared identifier is reported only once for each function it appears in
+checked program was:
+/* begin */
+ 1: #include "ruby.h"
+ 2: 
+ 3: /*top*/
+ 4: int t() { void ((*volatile p)()); p = (void ((*)()))xmlRelaxNGSetParserStructuredErrors; return 0; }
+ 5: int main(int argc, char **argv)
+ 6: {
+ 7:   if (argc > 1000000) {
+ 8:     printf("%p", &t);
+ 9:   }
+10: 
+11:   return 0;
+12: }
+/* end */
+
+"gcc -o conftest -I/usr/include/ruby-1.9.1/x86_64-linux -I/usr/include/ruby-1.9.1/ruby/backward -I/usr/include/ruby-1.9.1 -I. -I/opt/local/include/libxml2 -I/usr/local/include/libxml2 -I/opt/local/include -I/usr/local/include -I/usr/include -I/usr/include -I/usr/include/libxml2 -D_FORTIFY_SOURCE=2  -D_FORTIFY_SOURCE=2 -O2 -pipe -march=native -w  -g -DXP_UNIX -O3 -Wall -Wcast-qual -Wwrite-strings -Wconversion -Wmissing-noreturn -Winline conftest.c  -L. -L/usr/lib -L/opt/local/lib -L/usr/local/lib -L/usr/lib -L. -Wl,-Bsymbolic-functions -Wl,-z,relro -L/build/buildd/ruby1.9.1-1.9.3.484/debian/lib -rdynamic -Wl,-export-dynamic    -lexslt -lxslt -lxml2  -lruby-1.9.1 -lexslt -lxslt -lxml2  -lpthread -lrt -ldl -lcrypt -lm   -lc "
+checked program was:
+/* begin */
+ 1: #include "ruby.h"
+ 2: 
+ 3: /*top*/
+ 4: int t() { xmlRelaxNGSetParserStructuredErrors(); return 0; }
+ 5: int main(int argc, char **argv)
+ 6: {
+ 7:   if (argc > 1000000) {
+ 8:     printf("%p", &t);
+ 9:   }
+10: 
+11:   return 0;
+12: }
+/* end */
+
+--------------------
+
+have_func: checking for xmlRelaxNGSetValidStructuredErrors()... -------------------- yes
+
+"gcc -o conftest -I/usr/include/ruby-1.9.1/x86_64-linux -I/usr/include/ruby-1.9.1/ruby/backward -I/usr/include/ruby-1.9.1 -I. -I/opt/local/include/libxml2 -I/usr/local/include/libxml2 -I/opt/local/include -I/usr/local/include -I/usr/include -I/usr/include -I/usr/include/libxml2 -D_FORTIFY_SOURCE=2  -D_FORTIFY_SOURCE=2 -O2 -pipe -march=native -w  -g -DXP_UNIX -O3 -Wall -Wcast-qual -Wwrite-strings -Wconversion -Wmissing-noreturn -Winline conftest.c  -L. -L/usr/lib -L/opt/local/lib -L/usr/local/lib -L/usr/lib -L. -Wl,-Bsymbolic-functions -Wl,-z,relro -L/build/buildd/ruby1.9.1-1.9.3.484/debian/lib -rdynamic -Wl,-export-dynamic    -lexslt -lxslt -lxml2  -lruby-1.9.1 -lexslt -lxslt -lxml2  -lpthread -lrt -ldl -lcrypt -lm   -lc "
+conftest.c: In function ‘t’:
+conftest.c:4:53: error: ‘xmlRelaxNGSetValidStructuredErrors’ undeclared (first use in this function)
+ int t() { void ((*volatile p)()); p = (void ((*)()))xmlRelaxNGSetValidStructuredErrors; return 0; }
+                                                     ^
+conftest.c:4:53: note: each undeclared identifier is reported only once for each function it appears in
+checked program was:
+/* begin */
+ 1: #include "ruby.h"
+ 2: 
+ 3: /*top*/
+ 4: int t() { void ((*volatile p)()); p = (void ((*)()))xmlRelaxNGSetValidStructuredErrors; return 0; }
+ 5: int main(int argc, char **argv)
+ 6: {
+ 7:   if (argc > 1000000) {
+ 8:     printf("%p", &t);
+ 9:   }
+10: 
+11:   return 0;
+12: }
+/* end */
+
+"gcc -o conftest -I/usr/include/ruby-1.9.1/x86_64-linux -I/usr/include/ruby-1.9.1/ruby/backward -I/usr/include/ruby-1.9.1 -I. -I/opt/local/include/libxml2 -I/usr/local/include/libxml2 -I/opt/local/include -I/usr/local/include -I/usr/include -I/usr/include -I/usr/include/libxml2 -D_FORTIFY_SOURCE=2  -D_FORTIFY_SOURCE=2 -O2 -pipe -march=native -w  -g -DXP_UNIX -O3 -Wall -Wcast-qual -Wwrite-strings -Wconversion -Wmissing-noreturn -Winline conftest.c  -L. -L/usr/lib -L/opt/local/lib -L/usr/local/lib -L/usr/lib -L. -Wl,-Bsymbolic-functions -Wl,-z,relro -L/build/buildd/ruby1.9.1-1.9.3.484/debian/lib -rdynamic -Wl,-export-dynamic    -lexslt -lxslt -lxml2  -lruby-1.9.1 -lexslt -lxslt -lxml2  -lpthread -lrt -ldl -lcrypt -lm   -lc "
+checked program was:
+/* begin */
+ 1: #include "ruby.h"
+ 2: 
+ 3: /*top*/
+ 4: int t() { xmlRelaxNGSetValidStructuredErrors(); return 0; }
+ 5: int main(int argc, char **argv)
+ 6: {
+ 7:   if (argc > 1000000) {
+ 8:     printf("%p", &t);
+ 9:   }
+10: 
+11:   return 0;
+12: }
+/* end */
+
+--------------------
+
+have_func: checking for xmlSchemaSetValidStructuredErrors()... -------------------- yes
+
+"gcc -o conftest -I/usr/include/ruby-1.9.1/x86_64-linux -I/usr/include/ruby-1.9.1/ruby/backward -I/usr/include/ruby-1.9.1 -I. -I/opt/local/include/libxml2 -I/usr/local/include/libxml2 -I/opt/local/include -I/usr/local/include -I/usr/include -I/usr/include -I/usr/include/libxml2 -D_FORTIFY_SOURCE=2  -D_FORTIFY_SOURCE=2 -O2 -pipe -march=native -w  -g -DXP_UNIX -O3 -Wall -Wcast-qual -Wwrite-strings -Wconversion -Wmissing-noreturn -Winline conftest.c  -L. -L/usr/lib -L/opt/local/lib -L/usr/local/lib -L/usr/lib -L. -Wl,-Bsymbolic-functions -Wl,-z,relro -L/build/buildd/ruby1.9.1-1.9.3.484/debian/lib -rdynamic -Wl,-export-dynamic    -lexslt -lxslt -lxml2  -lruby-1.9.1 -lexslt -lxslt -lxml2  -lpthread -lrt -ldl -lcrypt -lm   -lc "
+conftest.c: In function ‘t’:
+conftest.c:4:53: error: ‘xmlSchemaSetValidStructuredErrors’ undeclared (first use in this function)
+ int t() { void ((*volatile p)()); p = (void ((*)()))xmlSchemaSetValidStructuredErrors; return 0; }
+                                                     ^
+conftest.c:4:53: note: each undeclared identifier is reported only once for each function it appears in
+checked program was:
+/* begin */
+ 1: #include "ruby.h"
+ 2: 
+ 3: /*top*/
+ 4: int t() { void ((*volatile p)()); p = (void ((*)()))xmlSchemaSetValidStructuredErrors; return 0; }
+ 5: int main(int argc, char **argv)
+ 6: {
+ 7:   if (argc > 1000000) {
+ 8:     printf("%p", &t);
+ 9:   }
+10: 
+11:   return 0;
+12: }
+/* end */
+
+"gcc -o conftest -I/usr/include/ruby-1.9.1/x86_64-linux -I/usr/include/ruby-1.9.1/ruby/backward -I/usr/include/ruby-1.9.1 -I. -I/opt/local/include/libxml2 -I/usr/local/include/libxml2 -I/opt/local/include -I/usr/local/include -I/usr/include -I/usr/include -I/usr/include/libxml2 -D_FORTIFY_SOURCE=2  -D_FORTIFY_SOURCE=2 -O2 -pipe -march=native -w  -g -DXP_UNIX -O3 -Wall -Wcast-qual -Wwrite-strings -Wconversion -Wmissing-noreturn -Winline conftest.c  -L. -L/usr/lib -L/opt/local/lib -L/usr/local/lib -L/usr/lib -L. -Wl,-Bsymbolic-functions -Wl,-z,relro -L/build/buildd/ruby1.9.1-1.9.3.484/debian/lib -rdynamic -Wl,-export-dynamic    -lexslt -lxslt -lxml2  -lruby-1.9.1 -lexslt -lxslt -lxml2  -lpthread -lrt -ldl -lcrypt -lm   -lc "
+checked program was:
+/* begin */
+ 1: #include "ruby.h"
+ 2: 
+ 3: /*top*/
+ 4: int t() { xmlSchemaSetValidStructuredErrors(); return 0; }
+ 5: int main(int argc, char **argv)
+ 6: {
+ 7:   if (argc > 1000000) {
+ 8:     printf("%p", &t);
+ 9:   }
+10: 
+11:   return 0;
+12: }
+/* end */
+
+--------------------
+
+have_func: checking for xmlSchemaSetParserStructuredErrors()... -------------------- yes
+
+"gcc -o conftest -I/usr/include/ruby-1.9.1/x86_64-linux -I/usr/include/ruby-1.9.1/ruby/backward -I/usr/include/ruby-1.9.1 -I. -I/opt/local/include/libxml2 -I/usr/local/include/libxml2 -I/opt/local/include -I/usr/local/include -I/usr/include -I/usr/include -I/usr/include/libxml2 -D_FORTIFY_SOURCE=2  -D_FORTIFY_SOURCE=2 -O2 -pipe -march=native -w  -g -DXP_UNIX -O3 -Wall -Wcast-qual -Wwrite-strings -Wconversion -Wmissing-noreturn -Winline conftest.c  -L. -L/usr/lib -L/opt/local/lib -L/usr/local/lib -L/usr/lib -L. -Wl,-Bsymbolic-functions -Wl,-z,relro -L/build/buildd/ruby1.9.1-1.9.3.484/debian/lib -rdynamic -Wl,-export-dynamic    -lexslt -lxslt -lxml2  -lruby-1.9.1 -lexslt -lxslt -lxml2  -lpthread -lrt -ldl -lcrypt -lm   -lc "
+conftest.c: In function ‘t’:
+conftest.c:4:53: error: ‘xmlSchemaSetParserStructuredErrors’ undeclared (first use in this function)
+ int t() { void ((*volatile p)()); p = (void ((*)()))xmlSchemaSetParserStructuredErrors; return 0; }
+                                                     ^
+conftest.c:4:53: note: each undeclared identifier is reported only once for each function it appears in
+checked program was:
+/* begin */
+ 1: #include "ruby.h"
+ 2: 
+ 3: /*top*/
+ 4: int t() { void ((*volatile p)()); p = (void ((*)()))xmlSchemaSetParserStructuredErrors; return 0; }
+ 5: int main(int argc, char **argv)
+ 6: {
+ 7:   if (argc > 1000000) {
+ 8:     printf("%p", &t);
+ 9:   }
+10: 
+11:   return 0;
+12: }
+/* end */
+
+"gcc -o conftest -I/usr/include/ruby-1.9.1/x86_64-linux -I/usr/include/ruby-1.9.1/ruby/backward -I/usr/include/ruby-1.9.1 -I. -I/opt/local/include/libxml2 -I/usr/local/include/libxml2 -I/opt/local/include -I/usr/local/include -I/usr/include -I/usr/include -I/usr/include/libxml2 -D_FORTIFY_SOURCE=2  -D_FORTIFY_SOURCE=2 -O2 -pipe -march=native -w  -g -DXP_UNIX -O3 -Wall -Wcast-qual -Wwrite-strings -Wconversion -Wmissing-noreturn -Winline conftest.c  -L. -L/usr/lib -L/opt/local/lib -L/usr/local/lib -L/usr/lib -L. -Wl,-Bsymbolic-functions -Wl,-z,relro -L/build/buildd/ruby1.9.1-1.9.3.484/debian/lib -rdynamic -Wl,-export-dynamic    -lexslt -lxslt -lxml2  -lruby-1.9.1 -lexslt -lxslt -lxml2  -lpthread -lrt -ldl -lcrypt -lm   -lc "
+checked program was:
+/* begin */
+ 1: #include "ruby.h"
+ 2: 
+ 3: /*top*/
+ 4: int t() { xmlSchemaSetParserStructuredErrors(); return 0; }
+ 5: int main(int argc, char **argv)
+ 6: {
+ 7:   if (argc > 1000000) {
+ 8:     printf("%p", &t);
+ 9:   }
+10: 
+11:   return 0;
+12: }
+/* end */
+
+--------------------
+
